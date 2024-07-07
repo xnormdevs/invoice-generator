@@ -1,10 +1,9 @@
-import Invoice from "@/app/components/Invoice";
-
+import Invoice from "./components/invoice/Invoice";
 
 export default function Home() {
   return (
-   <main>
-    <Invoice/>
-   </main>
+    <main>
+      <Invoice />
+    </main>
   );
 }
