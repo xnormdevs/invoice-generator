@@ -7,10 +7,11 @@ import React from "react";
 export interface IAntDTextArea {
   name: string;
   value: string | number;
-  showLabel: boolean;
+  showLabel?: boolean;
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   className?: string;
   variant: "outlined" | "borderless" | "filled" | undefined;
+  placeholder?:string;
 }
 const AntDTextArea = (props: IAntDTextArea) => {
   return (
@@ -21,6 +22,8 @@ const AntDTextArea = (props: IAntDTextArea) => {
         value={props.value}
         variant={props.variant}
         onChange={props.onChange}
+        autoSize={{ minRows: 3, maxRows: 6 }}
+        placeholder={props.placeholder}
       />
     </>
   );

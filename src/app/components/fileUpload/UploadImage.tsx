@@ -1,17 +1,16 @@
 "use client";
-import React from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import type { UploadFile, UploadProps } from 'antd';
-import { Upload } from 'antd';
-import ImgCrop from 'antd-img-crop';
-import Image from 'next/image';
+import React from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import type { UploadFile, UploadProps } from "antd";
+import { Upload } from "antd";
+import ImgCrop from "antd-img-crop";
+import Image from "next/image";
 type UploadImageProps = {
-    fileList: UploadFile[];
-    setFileList: React.Dispatch<React.SetStateAction<UploadFile[]>>;
-  };
-  const UploadImage: React.FC<UploadImageProps> = ({ fileList, setFileList }) => {
-
-  const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+  fileList: UploadFile[];
+  setFileList: React.Dispatch<React.SetStateAction<UploadFile[]>>;
+};
+const UploadImage: React.FC<UploadImageProps> = ({ fileList, setFileList }) => {
+  const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList.slice(-1)); // Allow only one file
   };
 
@@ -47,10 +46,20 @@ type UploadImageProps = {
           )}
         </Upload>
       </ImgCrop>
-      {fileList.length > 0 && fileList[0].status === 'done' && (
-        <div style={{ marginTop: 16, position: 'relative', width: '100%', height: '300px' }}>
+      {fileList.length > 0 && fileList[0].status === "done" && (
+        <div
+          style={{
+            marginTop: 16,
+            position: "relative",
+            width: "100%",
+            height: "300px",
+          }}
+        >
           <Image
-            src={fileList[0].url || URL.createObjectURL(fileList[0].originFileObj as Blob)}
+            src={
+              fileList[0].url ||
+              URL.createObjectURL(fileList[0].originFileObj as Blob)
+            }
             alt="Uploaded"
             layout="fill"
             objectFit="contain"

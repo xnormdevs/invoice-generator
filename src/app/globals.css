@@ -5,3 +5,10 @@
 * {
   margin: 0;
 }
+
+.amount {
+  @apply flex-1 mb-1 text-right text-gray-500;
+}
+.flex-section{
+  @apply flex justify-between items-center mb-2
+}

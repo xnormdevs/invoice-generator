@@ -1,9 +1,21 @@
 "use client";
 
-import { Button, Col, Flex, Form, Grid, Input, Row, UploadFile } from "antd";
+import {
+  Button,
+  Col,
+  DatePickerProps,
+  Flex,
+  Form,
+  Grid,
+  Input,
+  Row,
+  UploadFile,
+} from "antd";
 import React, { useState } from "react";
 import UploadImage from "../fileUpload/UploadImage";
 import AntDInput from "../input/AntDInput";
+import AntDTextArea from "../input/AntDTextArea";
+import AntDDatePicker from "../input/AntDDatePicker";
 interface Item {
   id: number;
   description: string;
@@ -20,11 +32,11 @@ interface InvoiceBasicDate {
   billTo: string;
   shipToLabel: string;
   shipTo: string;
-  dateLable: string;
+  dateLabel: string;
   date: string;
   paymentTermsLabel: string;
   paymentTerms: string;
-  dueDateLable: string;
+  dueDateLabel: string;
   dueDate: string;
   poNumberLable: string;
   poNumber: string;
@@ -47,8 +59,8 @@ interface InvoiceBasicDate {
   total: string;
   amountPaidLabel: string;
   amountPaid: string;
-  amountDueLabel: string;
-  amountDue: string;
+  balanceDueLabel: string;
+  balanceDue: string;
 
   notesLabel: string;
   notes: string;
@@ -65,11 +77,11 @@ const defaultInvoiceData: InvoiceBasicDate = {
   billTo: "",
   shipToLabel: "Ship To",
   shipTo: "",
-  dateLable: "Data",
+  dateLabel: "Date",
   date: "",
   paymentTermsLabel: "Payment Terms",
   paymentTerms: "",
-  dueDateLable: "Due Date",
+  dueDateLabel: "Due Date",
   dueDate: "",
   poNumberLable: "PO Number",
   poNumber: "",
@@ -81,7 +93,7 @@ const defaultInvoiceData: InvoiceBasicDate = {
   items: [],
 
   subTotalLabel: "Sub Total",
-  subTotal: "",
+  subTotal: "0.00",
   discountLabel: "Discount",
   discount: "",
   taxLabel: "Tax",
@@ -89,11 +101,11 @@ const defaultInvoiceData: InvoiceBasicDate = {
   shippingLabel: "Shipping",
   shipping: "",
   totalLabel: "Total",
-  total: "",
+  total: "0.00",
   amountPaidLabel: "Amount Paid",
-  amountPaid: "",
-  amountDueLabel: "Amout Due",
-  amountDue: "",
+  amountPaid: "0.00",
+  balanceDueLabel: "Balance Due",
+  balanceDue: "0.00",
 
   notesLabel: "Notes",
   notes: "",
@@ -118,6 +130,14 @@ const Invoice: React.FC = () => {
     }
   };
 
+  const onChangeDate = (name: string, value: any) => {
+    if (invoiceData) {
+      setInvoiceData({
+        ...invoiceData,
+        [name]: value,
+      });
+    }
+  };
 
   const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (invoiceData) {
@@ -152,15 +172,15 @@ const Invoice: React.FC = () => {
               className="mb-4"
             >
               {/*  file upload */}
-              <UploadImage fileList={fileList} setFileList={setFileList} />
+              <div className="w-[60%]">
+                <UploadImage fileList={fileList} setFileList={setFileList} />
+              </div>
               {/* invoice name and number */}
-              <div className="w-[40%]">
+              <div className="w-[30%]">
                 <AntDInput
                   name="invoiceName"
                   value={invoiceData?.invoiceName}
                   variant="borderless"
-                  showLabel={false}
-                  size="large"
                   onChange={onChangeInput}
                   className="text-4xl h-10 mb-2"
                 />
@@ -168,30 +188,228 @@ const Invoice: React.FC = () => {
                   name="invoiceNumber"
                   value={invoiceData?.invoiceNumber}
                   variant="outlined"
-                  showLabel={false}
-                  size="large"
                   onChange={onChangeInput}
                   prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>#</p>}
                   className="text-right"
                 />
               </div>
             </Flex>
-
-            {/* second row  */}
+            {/*  second row */}
             <Flex
               gap="middle"
               align="start"
               vertical={false}
               justify="space-between"
+              className="mt-8"
             >
-              <AntDInput
-                name="owner"
-                value={invoiceData?.owner}
-                variant="outlined"
-                showLabel={false}
-                size="large"
-                onChange={onChangeTextArea}
-              />
+              <div>
+                <AntDTextArea
+                  name="owner"
+                  value={invoiceData?.owner}
+                  variant="outlined"
+                  onChange={onChangeTextArea}
+                  placeholder="Who is this from?"
+                  className="w-[60%]"
+                />
+                <div className="flex-section mt-3">
+                  <div className="mr-4">
+                    <AntDInput
+                      name="billToLabel"
+                      value={invoiceData?.billToLabel}
+                      variant="borderless"
+                      onChange={onChangeInput}
+                      className="mb-2"
+                    />
+                    <AntDTextArea
+                      name="billTo"
+                      value={invoiceData?.billTo}
+                      variant="outlined"
+                      onChange={onChangeTextArea}
+                      placeholder="Who is this to?"
+                    />
+                  </div>
+                  <div>
+                    <AntDInput
+                      name="shipToLabel"
+                      value={invoiceData?.shipToLabel}
+                      variant="borderless"
+                      onChange={onChangeInput}
+                      className="mb-2"
+                    />
+                    <AntDTextArea
+                      name="shipTo"
+                      value={invoiceData?.shipTo}
+                      variant="outlined"
+                      onChange={onChangeTextArea}
+                      placeholder="(Optional)"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between">
+                  <AntDInput
+                    name="dateLabel"
+                    value={invoiceData?.dateLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right mr-5"
+                  />
+                  <AntDDatePicker
+                    name="date"
+                    value={invoiceData?.date}
+                    variant="outlined"
+                    onChange={onChangeDate}
+                    // className="text-right"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-5">
+                  <AntDInput
+                    name="paymentTermsLabel"
+                    value={invoiceData?.paymentTermsLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right mr-5"
+                  />
+                  <AntDInput
+                    name="paymentTerms"
+                    value={invoiceData?.paymentTerms}
+                    variant="outlined"
+                    onChange={onChangeInput}
+                    // className="text-right"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-5">
+                  <AntDInput
+                    name="dueDateLabel"
+                    value={invoiceData?.dueDateLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right mr-5"
+                  />
+                  <AntDDatePicker
+                    name="dueDate"
+                    value={invoiceData?.dueDate}
+                    variant="outlined"
+                    onChange={onChangeDate}
+                    // className="text-right"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-5">
+                  <AntDInput
+                    name="poNumberLable"
+                    value={invoiceData?.poNumberLable}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right mr-5"
+                  />
+                  <AntDInput
+                    name="poNumber"
+                    value={invoiceData?.poNumber}
+                    variant="outlined"
+                    onChange={onChangeInput}
+                    // className="text-right"
+                  />
+                </div>
+              </div>
+            </Flex>
+            {/*  items table */}
+            {/*  bottom section */}
+            <Flex
+              gap="middle"
+              align="start"
+              vertical={false}
+              justify="space-between"
+              className="mt-8"
+            >
+              <div className="w-[50%]">
+                <div className="mb-5">
+                  <AntDInput
+                    name="notesLabel"
+                    value={invoiceData?.notesLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="mb-2"
+                  />
+                  <AntDTextArea
+                    name="notes"
+                    value={invoiceData?.notes}
+                    variant="outlined"
+                    onChange={onChangeTextArea}
+                    placeholder="Notes - any relevent information not already covered?"
+                  />
+                </div>
+                <div>
+                  <AntDInput
+                    name="termsLabel"
+                    value={invoiceData?.termsLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="mb-2"
+                  />
+                  <AntDTextArea
+                    name="terms"
+                    value={invoiceData?.terms}
+                    variant="outlined"
+                    onChange={onChangeTextArea}
+                    placeholder="Terms and conditions - late fees, payment methods, delivery schedule"
+                  />
+                </div>
+              </div>
+              <div className="w-[40%]">
+                <div className="flex-section">
+                  <AntDInput
+                    name="subTotalLabel"
+                    value={invoiceData?.subTotalLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right flex-1"
+                  />
+                  <p className="amount">
+                    ${invoiceData.subTotal.toLowerCase()}
+                  </p>
+                </div>
+
+                <div className="flex-section">
+                  <AntDInput
+                    name="totalLabel"
+                    value={invoiceData?.totalLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right flex-1"
+                  />
+                  <p className="amount">${invoiceData.total.toLowerCase()}</p>
+                </div>
+                <div className="flex-section">
+                  <AntDInput
+                    name="amountPaidLabel"
+                    value={invoiceData?.amountPaidLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right flex-1"
+                  />
+                  <AntDInput
+                    name="amountPaid"
+                    value={invoiceData?.amountPaid}
+                    variant="outlined"
+                    onChange={onChangeInput}
+                    prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
+                    className="text-right flex-1 !w-[90%]"
+                  />
+                </div>
+                <div className="flex-section">
+                  <AntDInput
+                    name="balanceDueLabel"
+                    value={invoiceData?.balanceDueLabel}
+                    variant="borderless"
+                    onChange={onChangeInput}
+                    className="text-right flex-1"
+                  />
+                  <p className="amount">
+                    ${invoiceData.balanceDue.toLowerCase()}
+                  </p>
+                </div>
+              </div>
             </Flex>
             {/*  reset button */}
             <Button htmlType="button" onClick={onReset} className="mt-6">
