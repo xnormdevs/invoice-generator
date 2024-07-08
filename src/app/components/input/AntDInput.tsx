@@ -7,19 +7,35 @@ export interface IAntDInput {
   name: string;
   value: string | number;
   showLabel?: boolean;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
   className?: string;
   variant?: "outlined" | "borderless" | "filled" | undefined;
   size?: "small" | "middle" | "large" | undefined;
   prefix?: React.ReactNode;
   placeholder?: string;
+  type?: "string" | "number";
 }
+const formatNumber = (value: number) => new Intl.NumberFormat().format(value);
+
 const AntDInput = (props: IAntDInput) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value: inputValue } = e.target;
+    const reg = /^-?\d*(\.\d*)?$/;
+    if (
+      (props.type === "number" && reg.test(inputValue)) ||
+      inputValue === "" ||
+      inputValue === "-"
+    ) {
+      props.onChange(e);
+    } else {
+      props.onChange(e);
+    }
+  };
   return (
     <>
       <Input
         name={props.name}
-        size={"large"}
+        size={"middle"}
         className={`w-full focus:shadow-md ${props.className} ${
           props.variant === "borderless"
             ? "text-gray-500 focus:ring-gray-400/50 focus:ring-1"
@@ -27,7 +43,7 @@ const AntDInput = (props: IAntDInput) => {
         }`}
         value={props.value}
         variant={props.variant}
-        onChange={props.onChange}
+        onChange={handleChange}
         prefix={props.prefix}
         placeholder={props.placeholder}
       />

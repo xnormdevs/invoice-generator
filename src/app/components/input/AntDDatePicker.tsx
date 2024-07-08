@@ -23,7 +23,7 @@ const AntDDatePicker = (props: IAntDDatePicker) => {
         name={props.name}
         className={`w-full ${props.className}`}
         variant={props.variant}
-        size="large"
+        size="middle"
       />
     </>
   );
