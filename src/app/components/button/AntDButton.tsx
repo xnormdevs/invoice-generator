@@ -12,6 +12,7 @@ export interface IAntDButton {
   title: string;
   clickEvent: () => void;
   className?: string;
+  size?: "large" | "middle" | "small";
 }
 
 const AntDButton = (props: IAntDButton) => {
@@ -37,7 +38,7 @@ const AntDButton = (props: IAntDButton) => {
         },
       }}
     >
-      <Button type="primary" onClick={props.clickEvent} className={props.className}>
+      <Button type="primary" onClick={props.clickEvent} className={props.className} size={props.size}>
       {props.icon} {props.title}
       </Button>
     </ConfigProvider>

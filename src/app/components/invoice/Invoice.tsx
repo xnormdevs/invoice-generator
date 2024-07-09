@@ -1,23 +1,28 @@
 "use client";
 
+import { ICurrency } from "@/app/data/currency";
+import {
+  CloseOutlined,
+  DownloadOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import {
   Button,
   Col,
-  DatePickerProps,
+  Divider,
   Flex,
   Form,
-  Grid,
-  Input,
   Row,
-  UploadFile,
+  UploadFile
 } from "antd";
-import { PlusOutlined, CloseOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
+import AntDButton from "../button/AntDButton";
 import UploadImage from "../fileUpload/UploadImage";
+import AntDDatePicker from "../input/AntDDatePicker";
 import AntDInput from "../input/AntDInput";
 import AntDTextArea from "../input/AntDTextArea";
-import AntDDatePicker from "../input/AntDDatePicker";
-import AntDButton from "../button/AntDButton";
+import InputWithButton from "../input/InputWithButton";
+import SelectCurrency from "../input/SelectCurrency";
 interface Item {
   id: number;
   description: string;
@@ -123,7 +128,10 @@ const Invoice: React.FC = () => {
   const [discountApply, setDiscountApply] = useState<boolean>(false);
   const [taxApply, setTaxApply] = useState<boolean>(false);
   const [shippingApply, setShippingApply] = useState<boolean>(false);
-
+  const [isTaxPercentage, setTaxPercentage] = useState<boolean>(false);
+  const [isDiscountPercentage, setIsDiscountPercentage] =
+    useState<boolean>(false);
+  const [currency, setCurrency] = useState<ICurrency>();
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (invoiceData) {
       setInvoiceData({
@@ -377,7 +385,31 @@ const Invoice: React.FC = () => {
                   </p>
                 </div>
                 {/* discount tax shipping */}
-
+                {discountApply && (
+                  <div className="flex-section">
+                    <AntDInput
+                      name="discountLabel"
+                      value={invoiceData?.discountLabel}
+                      variant="borderless"
+                      onChange={onChangeInput}
+                      className="text-right flex-1"
+                    />
+                    <InputWithButton
+                      name="discount"
+                      value={invoiceData?.discount}
+                      onChange={onChangeInput}
+                      prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
+                      className="text-right flex-1"
+                      type="number"
+                      isPercentage={isDiscountPercentage}
+                      setIsPercentage={setIsDiscountPercentage}
+                    />
+                    <CloseOutlined
+                      className="cursor-pointer text-md text-red-600"
+                      onClick={() => setTaxApply(!taxApply)}
+                    />
+                  </div>
+                )}
                 {taxApply && (
                   <div className="flex-section">
                     <AntDInput
@@ -387,22 +419,23 @@ const Invoice: React.FC = () => {
                       onChange={onChangeInput}
                       className="text-right flex-1"
                     />
-                    <AntDInput
+                    <InputWithButton
                       name="tax"
                       value={invoiceData?.tax}
-                      variant="outlined"
                       onChange={onChangeInput}
                       prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
-                      className="text-right flex-1 !w-[50%] mr-4"
+                      className="text-right flex-1"
                       type="number"
+                      isPercentage={isTaxPercentage}
+                      setIsPercentage={setTaxPercentage}
                     />
                     <CloseOutlined
-                      className="cursor-pointer text-md"
+                      className="cursor-pointer text-md text-red-600"
                       onClick={() => setTaxApply(!taxApply)}
                     />
                   </div>
                 )}
-                
+
                 {shippingApply && (
                   <div className="flex-section">
                     <AntDInput
@@ -422,7 +455,7 @@ const Invoice: React.FC = () => {
                       type="number"
                     />
                     <CloseOutlined
-                      className="cursor-pointer text-md"
+                      className="cursor-pointer text-md text-red-600"
                       onClick={() => setShippingApply(!shippingApply)}
                     />
                   </div>
@@ -501,10 +534,16 @@ const Invoice: React.FC = () => {
             </Button>
           </Form>
         </Col>
-        <Col span={6}>
-          <Button type="primary" onClick={onFinish}>
-            primary
-          </Button>
+        <Col span={3} offset={2}>
+          <AntDButton
+            icon={<DownloadOutlined />}
+            title="Download"
+            clickEvent={() => setTaxApply(!taxApply)}
+            className="w-40"
+            size="large"
+          />
+          <Divider />
+          <SelectCurrency />
         </Col>
       </Row>
     </React.Fragment>
