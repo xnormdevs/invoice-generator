@@ -18,6 +18,7 @@ const InputWithButton = (props: IInputWithButton) => {
   return (
     <Space.Compact className="w-[50%] mr-4">
       <Input
+        type={props.type}
         name={props.name}
         value={props.value}
         onChange={props.onChange}
@@ -25,8 +26,12 @@ const InputWithButton = (props: IInputWithButton) => {
         className={`focus:shadow-md`}
         size={"middle"}
         variant="outlined"
-        prefix={!props.isPercentage && <p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
-        suffix={props.isPercentage && <p style={{ color: "rgba(0,0,0,.25)" }}>%</p>}
+        prefix={
+          !props.isPercentage && <p style={{ color: "rgba(0,0,0,.25)" }}>$</p>
+        }
+        suffix={
+          props.isPercentage && <p style={{ color: "rgba(0,0,0,.25)" }}>%</p>
+        }
       />
       <Button onClick={() => props.setIsPercentage(!props.isPercentage)}>
         <SwapOutlined />

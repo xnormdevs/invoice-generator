@@ -6,16 +6,10 @@ import {
   DownloadOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Col,
-  Divider,
-  Flex,
-  Form,
-  Row,
-  UploadFile
-} from "antd";
-import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+import { Button, Col, Divider, Flex, Form, Row, UploadFile } from "antd";
+import React, { useEffect, useState } from "react";
 import AntDButton from "../button/AntDButton";
 import UploadImage from "../fileUpload/UploadImage";
 import AntDDatePicker from "../input/AntDDatePicker";
@@ -23,9 +17,10 @@ import AntDInput from "../input/AntDInput";
 import AntDTextArea from "../input/AntDTextArea";
 import InputWithButton from "../input/InputWithButton";
 import SelectCurrency from "../input/SelectCurrency";
-interface Item {
-  id: number;
-  description: string;
+import InputTable from "../table/InputTable";
+export interface Item {
+  id: string;
+  itemName: string;
   quantity: number;
   rate: number;
 }
@@ -55,19 +50,19 @@ interface InvoiceBasicDate {
   items: Item[];
 
   subTotalLabel: string;
-  subTotal: string;
+  subTotal: number;
   discountLabel: string;
-  discount: string;
+  discount: number;
   taxLabel: string;
-  tax: string;
+  tax: number;
   shippingLabel: string;
-  shipping: string;
+  shipping: number;
   totalLabel: string;
-  total: string;
+  total: number;
   amountPaidLabel: string;
-  amountPaid: string;
+  amountPaid: number;
   balanceDueLabel: string;
-  balanceDue: string;
+  balanceDue: number;
 
   notesLabel: string;
   notes: string;
@@ -100,19 +95,19 @@ const defaultInvoiceData: InvoiceBasicDate = {
   items: [],
 
   subTotalLabel: "Sub Total",
-  subTotal: "0.00",
+  subTotal: 0.0,
   discountLabel: "Discount",
-  discount: "",
+  discount: 0.0,
   taxLabel: "Tax",
-  tax: "",
+  tax: 0.0,
   shippingLabel: "Shipping",
-  shipping: "",
+  shipping: 0.0,
   totalLabel: "Total",
-  total: "0.00",
+  total: 0.0,
   amountPaidLabel: "Amount Paid",
-  amountPaid: "0.00",
+  amountPaid: 0.0,
   balanceDueLabel: "Balance Due",
-  balanceDue: "0.00",
+  balanceDue: 0.0,
 
   notesLabel: "Notes",
   notes: "",
@@ -124,14 +119,19 @@ const Invoice: React.FC = () => {
   const [invoiceData, setInvoiceData] =
     useState<InvoiceBasicDate>(defaultInvoiceData);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<Item[]>([
+    { id: uuidv4(), itemName: "", quantity: 0, rate: 1 },
+  ]);
   const [discountApply, setDiscountApply] = useState<boolean>(false);
   const [taxApply, setTaxApply] = useState<boolean>(false);
   const [shippingApply, setShippingApply] = useState<boolean>(false);
   const [isTaxPercentage, setTaxPercentage] = useState<boolean>(false);
   const [isDiscountPercentage, setIsDiscountPercentage] =
     useState<boolean>(false);
-  const [currency, setCurrency] = useState<ICurrency>();
+  const [currency, setCurrency] = useState<ICurrency>({
+    id: "USD",
+    currency: "$",
+  });
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (invoiceData) {
       setInvoiceData({
@@ -140,6 +140,57 @@ const Invoice: React.FC = () => {
       });
     }
   };
+
+  useEffect(() => {
+    const calculateTotal = () => {
+      // Calculate subtotal
+      const tempSubTotal: number = items.reduce((acc, item) => {
+        return acc + item.quantity * item.rate;
+      }, 0);
+
+      // Apply discount
+      const discount: number = discountApply
+        ? isDiscountPercentage
+          ? tempSubTotal * (invoiceData.discount / 100)
+          : invoiceData.discount
+        : 0;
+      const subTotalAfterDiscount: number = tempSubTotal - discount;
+
+      // Apply tax
+      const tax: number = taxApply
+        ? isTaxPercentage
+          ? subTotalAfterDiscount * (invoiceData.tax / 100)
+          : invoiceData.tax
+        : 0;
+      const subTotalAfterTax: number = subTotalAfterDiscount + tax;
+
+      // Apply shipping
+      const shipping = shippingApply ? invoiceData.shipping : 0;
+      const total: number = subTotalAfterTax + shipping;
+
+      const balanceDue: number = total - invoiceData.amountPaid;
+
+      setInvoiceData((prevData) => ({
+        ...prevData,
+        subTotal: tempSubTotal,
+        total: total,
+        balanceDue: balanceDue,
+      }));
+    };
+
+    calculateTotal();
+  }, [
+    discountApply,
+    taxApply,
+    shippingApply,
+    isTaxPercentage,
+    isDiscountPercentage,
+    items,
+    invoiceData.discount,
+    invoiceData.tax,
+    invoiceData.shipping,
+    invoiceData.amountPaid,
+  ]);
 
   const onChangeDate = (name: string, value: any) => {
     if (invoiceData) {
@@ -168,7 +219,8 @@ const Invoice: React.FC = () => {
     setTaxApply(false);
     setDiscountApply(false);
     setShippingApply(false);
-    setItems([]);
+    setItems([{ id: uuidv4(), itemName: "", quantity: 0, rate: 1 }]);
+    setCurrency({ id: "USD", currency: "$" });
   };
   return (
     <React.Fragment>
@@ -329,6 +381,17 @@ const Invoice: React.FC = () => {
               </div>
             </Flex>
             {/*  items table */}
+            <InputTable
+              items={items}
+              setItems={setItems}
+              itemsLabel={invoiceData?.itemsLabel}
+              quantityLabel={invoiceData?.quantityLabel}
+              rateLabel={invoiceData?.rateLabel}
+              amountLabel={invoiceData?.amountLabel}
+              onChange={onChangeInput}
+              currency={currency}
+            />
+
             {/*  bottom section */}
             <Flex
               gap="middle"
@@ -380,9 +443,7 @@ const Invoice: React.FC = () => {
                     onChange={onChangeInput}
                     className="text-right flex-1"
                   />
-                  <p className="amount">
-                    ${invoiceData.subTotal.toLowerCase()}
-                  </p>
+                  <p className="amount">{currency.currency} {invoiceData.subTotal}</p>
                 </div>
                 {/* discount tax shipping */}
                 {discountApply && (
@@ -398,7 +459,7 @@ const Invoice: React.FC = () => {
                       name="discount"
                       value={invoiceData?.discount}
                       onChange={onChangeInput}
-                      prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
+                      prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>{currency.currency}</p>}
                       className="text-right flex-1"
                       type="number"
                       isPercentage={isDiscountPercentage}
@@ -406,7 +467,7 @@ const Invoice: React.FC = () => {
                     />
                     <CloseOutlined
                       className="cursor-pointer text-md text-red-600"
-                      onClick={() => setTaxApply(!taxApply)}
+                      onClick={() => setDiscountApply(!discountApply)}
                     />
                   </div>
                 )}
@@ -423,7 +484,7 @@ const Invoice: React.FC = () => {
                       name="tax"
                       value={invoiceData?.tax}
                       onChange={onChangeInput}
-                      prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
+                      prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>{currency.currency}</p>}
                       className="text-right flex-1"
                       type="number"
                       isPercentage={isTaxPercentage}
@@ -450,7 +511,7 @@ const Invoice: React.FC = () => {
                       value={invoiceData?.shipping}
                       variant="outlined"
                       onChange={onChangeInput}
-                      prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
+                      prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>{currency.currency}</p>}
                       className="text-right flex-1 !w-[50%] mr-4"
                       type="number"
                     />
@@ -495,7 +556,7 @@ const Invoice: React.FC = () => {
                     onChange={onChangeInput}
                     className="text-right flex-1"
                   />
-                  <p className="amount">${invoiceData.total.toLowerCase()}</p>
+                  <p className="amount">{currency.currency} {invoiceData.total}</p>
                 </div>
                 <div className="flex-section mr-10">
                   <AntDInput
@@ -506,11 +567,12 @@ const Invoice: React.FC = () => {
                     className="text-right flex-1"
                   />
                   <AntDInput
+                    type="number"
                     name="amountPaid"
                     value={invoiceData?.amountPaid}
                     variant="outlined"
                     onChange={onChangeInput}
-                    prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>$</p>}
+                    prefix={<p style={{ color: "rgba(0,0,0,.25)" }}>{currency.currency}</p>}
                     className="text-right flex-1 !w-[50%]"
                   />
                 </div>
@@ -522,9 +584,7 @@ const Invoice: React.FC = () => {
                     onChange={onChangeInput}
                     className="text-right flex-1"
                   />
-                  <p className="amount">
-                    ${invoiceData.balanceDue.toLowerCase()}
-                  </p>
+                  <p className="amount">{currency.currency} {invoiceData?.balanceDue}</p>
                 </div>
               </div>
             </Flex>
@@ -543,7 +603,7 @@ const Invoice: React.FC = () => {
             size="large"
           />
           <Divider />
-          <SelectCurrency />
+          <SelectCurrency currency={currency} setCurrency={setCurrency} />
         </Col>
       </Row>
     </React.Fragment>

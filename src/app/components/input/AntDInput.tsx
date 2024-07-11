@@ -13,7 +13,7 @@ export interface IAntDInput {
   size?: "small" | "middle" | "large" | undefined;
   prefix?: React.ReactNode;
   placeholder?: string;
-  type?: "string" | "number";
+  type?: "text" | "number";
 }
 const formatNumber = (value: number) => new Intl.NumberFormat().format(value);
 
@@ -34,6 +34,7 @@ const AntDInput = (props: IAntDInput) => {
   return (
     <>
       <Input
+        type={props.type}
         name={props.name}
         size={"middle"}
         className={`w-full focus:shadow-md ${props.className} ${

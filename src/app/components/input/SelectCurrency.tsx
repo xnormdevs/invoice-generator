@@ -1,9 +1,24 @@
 "use client";
-import currencies from "@/app/data/currency";
+import currencies, { ICurrency } from "@/app/data/currency";
 import { Select, Typography } from "antd";
 const { Title } = Typography;
 
-const SelectCurrency = () => {
+export interface ISelectCurrency {
+  currency: ICurrency;
+  setCurrency: (val: ICurrency) => void;
+}
+
+const SelectCurrency = (props: ISelectCurrency) => {
+  const handleCurrencyChange = (value: string) => {
+  if (value && currencies) {
+    const selectedCurrency: ICurrency | undefined = currencies.find(
+      (curr) => curr.id === value
+    );
+    if (selectedCurrency) {
+      props.setCurrency(selectedCurrency);
+    }
+  }
+};
   return (
     <>
       <Title level={5}>Currency</Title>
@@ -12,11 +27,20 @@ const SelectCurrency = () => {
         className="w-40"
         placeholder="Select a currecny"
         filterOption={(input, option) =>
-          (String(option?.label ?? "")).toLowerCase().includes(input.toLowerCase())
+          String(option?.label ?? "")
+            .toLowerCase()
+            .includes(input.toLowerCase())
         }
+        onChange={handleCurrencyChange}
       >
         {currencies.map((currency) => (
-            <Select.Option value={currency.id} label={currency.id} key={currency.id}>{currency.id + " - " + currency.currency}</Select.Option>
+          <Select.Option
+            value={currency.id}
+            label={currency.id}
+            key={currency.id}
+          >
+            {currency.id + " - " + currency.currency}
+          </Select.Option>
         ))}
       </Select>
     </>
