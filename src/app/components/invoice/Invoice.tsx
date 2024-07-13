@@ -114,7 +114,10 @@ const defaultInvoiceData: InvoiceBasicData = {
   notes: "",
   termsLabel: "Terms",
   terms: "",
-  currency: undefined,
+  currency: {
+    id: "USD",
+    currency: "$",
+  },
 };
 
 const defaultItem: Item = {

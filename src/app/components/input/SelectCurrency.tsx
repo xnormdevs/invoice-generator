@@ -32,6 +32,7 @@ const SelectCurrency = (props: ISelectCurrency) => {
             .includes(input.toLowerCase())
         }
         onChange={handleCurrencyChange}
+        value={props.currency.id}
       >
         {currencies.map((currency) => (
           <Select.Option
