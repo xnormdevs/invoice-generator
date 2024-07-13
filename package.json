@@ -1,5 +1,5 @@
 {
-  "name": "invoice-generator",
+  "name": "easy-invoice",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,12 +13,14 @@
     "antd": "^5.19.1",
     "antd-img-crop": "^4.22.0",
     "next": "14.2.4",
+    "pdfkit": "^0.15.0",
     "react": "^18",
     "react-dom": "^18",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pdfkit": "^0.13.4",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
