@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import PDFDocument from "pdfkit";
-import { InvoiceBasicData } from "@/app/components/invoice/Invoice";
+import { InvoiceBasicData } from "@/components/invoice/Invoice";
 import { NextApiResponse } from "next";
 export async function POST(req: Request, res: NextApiResponse) {
   const {

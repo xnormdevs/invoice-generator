@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Roboto } from "next/font/google";
 import { NextAuthProvider } from "./providers";
 import "./globals.css";
-import Navbar from "@/app/components/navbar/Navbar";
+import Navbar from "@/components/navbar/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 const roboto = Roboto({

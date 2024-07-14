@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
   reactStrictMode: true,
   swcMinify: true,
   images: {
@@ -26,8 +25,7 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-  },
-  basePath: '/invoice-generator',  
+  }
 };
 
 export default nextConfig;
