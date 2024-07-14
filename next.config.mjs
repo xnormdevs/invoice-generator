@@ -25,8 +25,7 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-  },
-  basePath: '/invoice-generator',  
+  }
 };
 
 export default nextConfig;
