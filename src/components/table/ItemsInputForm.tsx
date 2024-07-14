@@ -1,3 +1,4 @@
+'use client'
 import { ICurrency } from "@/app/data/currency";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row } from "antd";

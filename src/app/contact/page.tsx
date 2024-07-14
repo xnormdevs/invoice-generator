@@ -1,5 +1,5 @@
 // src/app/contact/page.tsx
-
+'use client'
 import React from 'react';
 
 const Contact: React.FC = () => {

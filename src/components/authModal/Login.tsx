@@ -1,3 +1,4 @@
+'use client'
 import { Divider, Modal } from "antd";
 import Image from "next/image";
 import { GoogleSignButton } from "./GoogleSignButton";
