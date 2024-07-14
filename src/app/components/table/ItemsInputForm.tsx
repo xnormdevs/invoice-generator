@@ -1,8 +1,8 @@
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { ICurrency } from "@/app/data/currency";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row } from "antd";
 import { v4 as uuidv4 } from "uuid";
 import { Item } from "../invoice/Invoice";
-import { ICurrency } from "@/app/data/currency";
 
 export interface IItemsInputForm {
   items: Item[];
@@ -10,17 +10,19 @@ export interface IItemsInputForm {
   currency: ICurrency;
 }
 
+const defaultItem: Item = {
+  id: uuidv4(),
+  itemName: "",
+  quantity: 1,
+  rate: 0,
+};
+
 const ItemsInputForm = (props: IItemsInputForm) => {
   const addItem = () => {
-    const newItem: Item = {
-      id: uuidv4(),
-      itemName: "",
-      quantity: 1,
-      rate: 0,
-    };
+    const newItem: Item = { ...defaultItem, id: uuidv4() };
     props.setItems([...props.items, newItem]);
   };
-
+  // console.log(props.items);
   const removeItem = (id: string) => {
     props.setItems(props.items.filter((item) => item.id !== id));
   };
@@ -36,11 +38,12 @@ const ItemsInputForm = (props: IItemsInputForm) => {
       }
       return item;
     });
+
     props.setItems(updatedItems);
   };
 
   const removeAllItems = () => {
-    props.setItems([{ id: uuidv4(), itemName: "", quantity: 0, rate: 1 }]);
+    props.setItems([defaultItem]);
   };
   return (
     <>
@@ -82,8 +85,8 @@ const ItemsInputForm = (props: IItemsInputForm) => {
             <div style={{ display: "flex", alignItems: "center" }}>
               <span>${(item.quantity * item.rate).toFixed(2)}</span>
               {props.items.length > 1 && (
-                <MinusCircleOutlined
-                  style={{ marginLeft: "10px", color: "red" }}
+                <DeleteOutlined
+                  className="ml-6 text-lg cursor-pointer text-red-400"
                   onClick={() => removeItem(item.id)}
                 />
               )}
@@ -93,7 +96,7 @@ const ItemsInputForm = (props: IItemsInputForm) => {
       ))}
       <div className="flex items-center mt-4">
         <Button type="dashed" onClick={addItem} icon={<PlusOutlined />}>
-          Add Line Item
+          Add New Item
         </Button>
         <Button danger onClick={removeAllItems} className="ml-4">
           Reset Items
