@@ -172,13 +172,13 @@ const Invoice: React.FC = () => {
           ? subTotalAfterDiscount * (invoiceData.tax / 100)
           : invoiceData.tax
         : 0;
-      const subTotalAfterTax: number = subTotalAfterDiscount + tax;
-
+      const subTotalAfterTax: number = Number(subTotalAfterDiscount) + Number(tax);
+   
       // Apply shipping
       const shipping = shippingApply ? invoiceData.shipping : 0;
-      const total: number = subTotalAfterTax + shipping;
+      const total: number = Number(subTotalAfterTax) + Number(shipping);
 
-      const balanceDue: number = total - invoiceData.amountPaid;
+      const balanceDue: number = Number(total) - invoiceData.amountPaid;
 
       setInvoiceData((prevData) => ({
         ...prevData,

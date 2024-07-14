@@ -19,10 +19,10 @@ const defaultItem: Item = {
 
 const ItemsInputForm = (props: IItemsInputForm) => {
   const addItem = () => {
-    const newItem: Item = defaultItem;
+    const newItem: Item = { ...defaultItem, id: uuidv4() };
     props.setItems([...props.items, newItem]);
   };
-
+  // console.log(props.items);
   const removeItem = (id: string) => {
     props.setItems(props.items.filter((item) => item.id !== id));
   };

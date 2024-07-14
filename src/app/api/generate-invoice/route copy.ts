@@ -2,7 +2,7 @@ import { InvoiceBasicData } from "@/app/components/invoice/Invoice";
 import { NextApiRequest, NextApiResponse } from "next";
 import PDFDocument from "pdfkit";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === "POST") {
     const {
       invoiceName,
@@ -44,23 +44,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       notes,
       termsLabel,
       terms,
-      currency
+      currency,
     }: InvoiceBasicData = req.body;
     console.log("invoiceData:", req.body);
     const doc = new PDFDocument();
     let buffers: Buffer[] = [];
 
     doc.on("data", buffers.push.bind(buffers));
-    doc.on("end", () => {
-      let pdfData = Buffer.concat(buffers);
-      res
-        .writeHead(200, {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": "attachment; filename=invoice.pdf",
-          "Content-Length": pdfData.length,
-        })
-        .end(pdfData);
-    });
 
     // Header
     doc.fontSize(20).text(invoiceName, { align: "center" });
@@ -117,6 +107,17 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     // Terms
     doc.text(`${termsLabel}: ${terms}`);
     doc.end();
+    doc.on("end", () => {
+      let pdfData = Buffer.concat(buffers);
+      // return res
+      //   .writeHead(200, {
+      //     "Content-Type": "application/pdf",
+      //     "Content-Disposition": "attachment; filename=invoice.pdf",
+      //     "Content-Length": pdfData.length,
+      //   })
+      //   .end(pdfData);
+      return res.send(req.body);
+    });
   } else {
     res.setHeader("Allow", ["POST"]);
     res.status(405).end(`Method ${req.method} Not Allowed`);

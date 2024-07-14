@@ -16,9 +16,7 @@ const Login = (props: ILogin) => {
   };
   return (
     <Modal open={props.isModalOpen} onCancel={handleCancel} footer={[]}>
-      <h1 className="text-2xl font-bold text-center text-sky-500">
-        Connect with
-      </h1>
+     
       <Image
         src="/logo.png"
         alt="logo"
@@ -26,7 +24,7 @@ const Login = (props: ILogin) => {
         height={150}
         className="mx-auto"
       />
-      <h2 className="text-xl font-bold text-center text-gray-400">
+      <h2 className="text-sm text-center text-gray-400">
         Invoice Magic at Zero Cost
       </h2>
       <Divider />
