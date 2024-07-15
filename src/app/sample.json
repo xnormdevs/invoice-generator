@@ -2,7 +2,7 @@
     "invoiceName": "INVOICE",
     "invoiceNumber": "INV-12345",
     "invoiceDate": "2024-07-13",
-    "owner": "John Doe",
+    "owner": "John Doe, 123 Business St, Metropolis",
     "billToLabel": "Bill To",
     "billTo": "Acme Corporation, 123 Business St, Metropolis",
     "shipToLabel": "Ship To",

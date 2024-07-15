@@ -39,19 +39,25 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   drawText(`#${jsonData.invoiceNumber}`, 450, height - 70);
 
   // Company Details
-  drawText(jsonData.owner, 50, height - 50);
-  drawBoldText(jsonData.billToLabel, 50, height - 100);
-  let billToyPosition = height - 120;
+  let owneryPosition = height - 100
+//   drawText(jsonData.owner, 50, height - 50);
+  jsonData.owner.split(",").forEach((line) => {
+    line = line.trim();
+    drawText(line, 50, owneryPosition);
+    owneryPosition -= 20;
+  });
+  drawBoldText(jsonData.billToLabel, 50, height - 180);
+  let billToyPosition = height - 200;
   jsonData.billTo.split(",").forEach((line) => {
     line = line.trim();
     drawText(line, 50, billToyPosition);
     billToyPosition -= 20;
   });
-  drawBoldText(jsonData.shipToLabel, 50, height - 180);
+  drawBoldText(jsonData.shipToLabel, 250, height - 180);
   let shipToyPosition = height - 200;
   jsonData.shipTo.split(",").forEach((line) => {
     line = line.trim();
-    drawText(line, 50, shipToyPosition);
+    drawText(line, 250, shipToyPosition);
     shipToyPosition -= 20;
   });
 
@@ -78,12 +84,12 @@ async function createInvoice(jsonData: InvoiceBasicData) {
     drawText(item.itemName, 50, yPosition);
     drawText(item.quantity.toString(), 250, yPosition);
     drawText(
-      `${jsonData?.currency?.currency}${item.rate}`,
+      `${jsonData?.currency?.currency}${item.rate.toFixed(2)}`,
       350,
       yPosition
     );
     drawText(
-      `${jsonData?.currency?.currency}${amount}`,
+      `${jsonData?.currency?.currency}${amount.toFixed(2)}`,
       450,
       yPosition
     );
@@ -94,7 +100,7 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   yPosition -= 20;
   drawBoldText(jsonData.subTotalLabel, 350, yPosition);
   drawText(
-    `${jsonData?.currency?.currency}${jsonData.subTotal}`,
+    `${jsonData?.currency?.currency}${jsonData.subTotal.toFixed(2)}`,
     450,
     yPosition
   );
@@ -102,7 +108,7 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   yPosition -= 20;
   drawBoldText(jsonData.discountLabel, 350, yPosition);
   drawText(
-    `-${jsonData?.currency?.currency}${jsonData.discount}`,
+    `-${jsonData?.currency?.currency}${jsonData.discount.toFixed(2)}`,
     450,
     yPosition
   );
@@ -110,7 +116,7 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   yPosition -= 20;
   drawBoldText(jsonData.taxLabel, 350, yPosition);
   drawText(
-    `${jsonData?.currency?.currency}${jsonData.tax}`,
+    `${jsonData?.currency?.currency}${jsonData.tax.toFixed(2)}`,
     450,
     yPosition
   );
@@ -118,7 +124,7 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   yPosition -= 20;
   drawBoldText(jsonData.shippingLabel, 350, yPosition);
   drawText(
-    `${jsonData?.currency?.currency}${jsonData.shipping}`,
+    `${jsonData?.currency?.currency}${jsonData.shipping.toFixed(2)}`,
     450,
     yPosition
   );
@@ -126,7 +132,7 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   yPosition -= 20;
   drawBoldText(jsonData.totalLabel, 350, yPosition);
   drawText(
-    `${jsonData?.currency?.currency}${jsonData.total}`,
+    `${jsonData?.currency?.currency}${jsonData.total.toFixed(2)}`,
     450,
     yPosition
   );
@@ -134,7 +140,7 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   yPosition -= 20;
   drawBoldText(jsonData.amountPaidLabel, 350, yPosition);
   drawText(
-    `-${jsonData?.currency?.currency}${jsonData.amountPaid}`,
+    `-${jsonData?.currency?.currency}${jsonData.amountPaid.toFixed(2)}`,
     450,
     yPosition
   );
@@ -142,7 +148,7 @@ async function createInvoice(jsonData: InvoiceBasicData) {
   yPosition -= 20;
   drawBoldText(jsonData.balanceDueLabel, 350, yPosition);
   drawText(
-    `${jsonData?.currency?.currency}${jsonData.balanceDue}`,
+    `${jsonData?.currency?.currency}${jsonData.balanceDue.toFixed(2)}`,
     450,
     yPosition
   );
