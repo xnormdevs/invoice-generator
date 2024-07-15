@@ -21,11 +21,11 @@ const Navbar = () => {
     },
   ];
   return (
-    <nav className="bg-gray-800 h-15 mb-8">
+    <nav className="bg-gray-800 h-15 mb-8 py-2">
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/">
           <div className="text-white text-xl font-bold">
-            <Image src="/logo.png" alt="Google" width={200} height={200} />
+            <Image src="/logo.png" alt="Google" width={100} height={100} />
           </div>
         </Link>
         <div className="flex items-center">

@@ -1,0 +1,58 @@
+{
+    "invoiceName": "INVOICE",
+    "invoiceNumber": "INV-12345",
+    "invoiceDate": "2024-07-13",
+    "owner": "John Doe",
+    "billToLabel": "Bill To",
+    "billTo": "Acme Corporation, 123 Business St, Metropolis",
+    "shipToLabel": "Ship To",
+    "shipTo": "Acme Corporation, 123 Business St, Metropolis",
+    "dateLabel": "Date",
+    "date": "2024-07-13",
+    "paymentTermsLabel": "Payment Terms",
+    "paymentTerms": "Net 30",
+    "dueDateLabel": "Due Date",
+    "dueDate": "2024-08-12",
+    "poNumberLabel": "PO Number",
+    "poNumber": "PO-67890",
+    "itemsLabel": "Item",
+    "quantityLabel": "Quantity",
+    "rateLabel": "Rate",
+    "amountLabel": "Amount",
+    "items": [
+        {
+            "id": "e3f63401-a67b-466e-b923-cfc412275591",
+            "itemName": "Product 1",
+            "quantity": 2,
+            "rate": 50
+        },
+        {
+            "id": "c3d63401-a67b-466e-b923-cfc412275592",
+            "itemName": "Product 2",
+            "quantity": 3,
+            "rate": 75
+        }
+    ],
+    "subTotalLabel": "Sub Total",
+    "subTotal": 325,
+    "discountLabel": "Discount",
+    "discount": 25,
+    "taxLabel": "Tax",
+    "tax": 30,
+    "shippingLabel": "Shipping",
+    "shipping": 10,
+    "totalLabel": "Total",
+    "total": 340,
+    "amountPaidLabel": "Amount Paid",
+    "amountPaid": 100,
+    "balanceDueLabel": "Balance Due",
+    "balanceDue": 240,
+    "notesLabel": "Notes",
+    "notes": "Thank you for your business!",
+    "termsLabel": "Terms",
+    "terms": "Payment due within 30 days.",
+    "currency": {
+        "id": "USD",
+        "currency": "$"
+    }
+}
