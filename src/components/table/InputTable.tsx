@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import { Item } from "../invoice/Invoice";
 import InputTableHeader from "./InputTableHeader";
@@ -14,6 +14,7 @@ export interface IInputTable {
   amountLabel: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   currency: ICurrency;
+  tableHeaderColor: string;
 }
 
 const InputTable = (props: IInputTable) => {
@@ -25,8 +26,14 @@ const InputTable = (props: IInputTable) => {
         rateLabel={props.rateLabel}
         amountLabel={props.amountLabel}
         onChange={props.onChange}
+        tableHeaderColor={props.tableHeaderColor}
+
       />
-      <ItemsInputForm items={props.items} setItems={props.setItems} currency={props.currency} />
+      <ItemsInputForm
+        items={props.items}
+        setItems={props.setItems}
+        currency={props.currency}
+      />
     </div>
   );
 };

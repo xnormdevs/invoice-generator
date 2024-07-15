@@ -9,11 +9,14 @@ export interface IInputTableHeader {
   rateLabel: string;
   amountLabel: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  tableHeaderColor: string;
+
 }
 const InputTableHeader = (props: IInputTableHeader) => {
+  console.log(props.tableHeaderColor);
   return (
     <>
-      <Row className="my-2 py-2 bg-[#18274e] text-white rounded-md w-full">
+      <Row className={`my-2 py-2 text-white rounded-md w-full`} style={{ backgroundColor: props?.tableHeaderColor }}>
         <Col span={14}>
           <AntDInput
             name="itemsLabel"
