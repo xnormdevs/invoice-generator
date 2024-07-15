@@ -18,6 +18,10 @@ import AntDTextArea from "../input/AntDTextArea";
 import InputWithButton from "../input/InputWithButton";
 import SelectCurrency from "../input/SelectCurrency";
 import InputTable from "../table/InputTable";
+import { generatePDF } from "@/lib/createInvoice";
+
+import sampleData from '@/app/sample.json';
+
 export interface Item {
   id: string;
   itemName: string;
@@ -220,34 +224,37 @@ const Invoice: React.FC = () => {
     }
   };
   const onFinish = async () => {
-    console.log("Logo", fileList);
+    // console.log("Logo", fileList);
     const data: InvoiceBasicData = {
       ...invoiceData,
       items: items,
       currency: currency,
     };
-    // console.log("invoiceData:", data);
-    const response = await fetch("/api/generate-invoice", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
+    // // console.log("invoiceData:", data);
+    // const response = await fetch("/api/generate-invoice", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(data),
+    // });
 
-    if (response.ok) {
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      a.download = "invoice.pdf";
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } else {
-      alert("Failed to generate invoice");
-    }
+    // if (response.ok) {
+    //   const blob = await response.blob();
+    //   const url = window.URL.createObjectURL(blob);
+    //   const a = document.createElement("a");
+    //   a.style.display = "none";
+    //   a.href = url;
+    //   a.download = "invoice.pdf";
+    //   document.body.appendChild(a);
+    //   a.click();
+    //   window.URL.revokeObjectURL(url);
+    // } else {
+    //   alert("Failed to generate invoice");
+    // }
+
+    const generatedData: InvoiceBasicData = sampleData;
+    await generatePDF(data);
   };
   const onReset = () => {
     setFileList([]);
