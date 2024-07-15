@@ -21,10 +21,10 @@ const SelectCurrency = (props: ISelectCurrency) => {
 };
   return (
     <>
-      <Title level={5}>Currency</Title>
+      <Title level={5} className="mt-4">Currency</Title>
       <Select
         showSearch
-        className="w-40"
+        className="w-full"
         placeholder="Select a currecny"
         filterOption={(input, option) =>
           String(option?.label ?? "")

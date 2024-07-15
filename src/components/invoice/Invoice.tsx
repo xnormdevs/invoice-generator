@@ -8,7 +8,16 @@ import {
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 
-import { Button, Col, Divider, Flex, Form, Row, UploadFile } from "antd";
+import {
+  Button,
+  Col,
+  ColorPicker,
+  Divider,
+  Flex,
+  Form,
+  Row,
+  UploadFile,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import AntDButton from "../button/AntDButton";
 import UploadImage from "../fileUpload/UploadImage";
@@ -20,7 +29,9 @@ import SelectCurrency from "../input/SelectCurrency";
 import InputTable from "../table/InputTable";
 import { generatePDF } from "@/lib/createInvoice";
 
-import sampleData from '@/app/sample.json';
+import sampleData from "@/app/sample.json";
+import ColorSelector from "../colorSelect/ColorSelector";
+import PageSizeSelector from "../pageSize/SelectPagesSize";
 
 export interface Item {
   id: string;
@@ -73,6 +84,7 @@ export interface InvoiceBasicData {
   termsLabel: string;
   terms: string;
   currency: ICurrency | undefined;
+  tableHeaderColor: string;
 }
 
 const defaultInvoiceData: InvoiceBasicData = {
@@ -122,6 +134,7 @@ const defaultInvoiceData: InvoiceBasicData = {
     id: "USD",
     currency: "$",
   },
+  tableHeaderColor: "#6b7280",
 };
 
 const defaultItem: Item = {
@@ -146,6 +159,13 @@ const Invoice: React.FC = () => {
     id: "USD",
     currency: "$",
   });
+
+  //  theme values
+  const [labelColor, setLabelColor] = useState<string>("#6b7280");
+  const [tableHeaderColor, setTableHeaderColor] = useState<string>(
+    defaultInvoiceData.tableHeaderColor
+  );
+  const [titleColor, setTitleColor] = useState<string>("#e5e7eb");
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (invoiceData) {
       setInvoiceData({
@@ -176,8 +196,9 @@ const Invoice: React.FC = () => {
           ? subTotalAfterDiscount * (invoiceData.tax / 100)
           : invoiceData.tax
         : 0;
-      const subTotalAfterTax: number = Number(subTotalAfterDiscount) + Number(tax);
-   
+      const subTotalAfterTax: number =
+        Number(subTotalAfterDiscount) + Number(tax);
+
       // Apply shipping
       const shipping = shippingApply ? invoiceData.shipping : 0;
       const total: number = Number(subTotalAfterTax) + Number(shipping);
@@ -229,11 +250,14 @@ const Invoice: React.FC = () => {
       ...invoiceData,
       items: items,
       currency: currency,
+      tableHeaderColor: tableHeaderColor
+        ? tableHeaderColor
+        : defaultInvoiceData.tableHeaderColor,
     };
-    
-    // console.log(fileList);
+
+    // console.log(fileList[0]);
     // const generatedData: InvoiceBasicData = sampleData;
-    await generatePDF(data);
+    await generatePDF(data, fileList[0] ? fileList[0] : undefined);
   };
   const onReset = () => {
     setFileList([]);
@@ -243,6 +267,9 @@ const Invoice: React.FC = () => {
     setShippingApply(false);
     setItems([defaultItem]);
     setCurrency({ id: "USD", currency: "$" });
+    setLabelColor("#6b7280");
+    setTableHeaderColor("#6b7280");
+    setTitleColor("#e5e7eb");
   };
   return (
     <React.Fragment>
@@ -271,7 +298,7 @@ const Invoice: React.FC = () => {
                   value={invoiceData?.invoiceName}
                   variant="borderless"
                   onChange={onChangeInput}
-                  className="text-4xl h-10 mb-2 font-bold"
+                  className={`text-4xl h-10 mb-2 font-bold !color-[${labelColor}]`}
                 />
                 <AntDInput
                   name="invoiceNumber"
@@ -412,6 +439,7 @@ const Invoice: React.FC = () => {
               amountLabel={invoiceData?.amountLabel}
               onChange={onChangeInput}
               currency={currency}
+              tableHeaderColor={tableHeaderColor}
             />
 
             {/*  bottom section */}
@@ -638,7 +666,18 @@ const Invoice: React.FC = () => {
           </Form>
         </Col>
         <Col span={3} offset={2}>
-          <div className="flex items-center">
+          {/* color picker */}
+
+          <ColorSelector
+            color={tableHeaderColor}
+            setColor={setTableHeaderColor}
+            title="Table Header Color"
+          />
+          {/* <PageSizeSelector /> */}
+          <SelectCurrency currency={currency} setCurrency={setCurrency} />
+          <Divider />
+
+          <div className="flex items-center mt-4">
             <AntDButton
               icon={<DownloadOutlined />}
               title="Download"
@@ -656,8 +695,6 @@ const Invoice: React.FC = () => {
               colorType="dangerColors"
             />
           </div>
-          <Divider />
-          <SelectCurrency currency={currency} setCurrency={setCurrency} />
         </Col>
       </Row>
     </React.Fragment>
