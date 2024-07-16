@@ -21,6 +21,7 @@ import InputTable from "../table/InputTable";
 
 import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
 import ColorSelector from "../colorSelect/ColorSelector";
+import PageSizeSelector from "../pageSize/SelectPagesSize";
 
 const defaultInvoiceData: InvoiceBasicData = {
   invoiceName: "INVOICE",
