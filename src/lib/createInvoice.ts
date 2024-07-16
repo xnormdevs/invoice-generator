@@ -1,7 +1,7 @@
-import { InvoiceBasicData } from "@/components/invoice/Invoice";
 import { UploadFile } from "antd";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { hexToRgb } from "./colorFuncs";
+import { InvoiceBasicData } from "@/types/IInvoiceBasicData";
 
 async function createInvoice(
   jsonData: InvoiceBasicData,
@@ -13,16 +13,16 @@ async function createInvoice(
     StandardFonts.HelveticaBold
   );
 
-  const page = pdfDoc.addPage([600, 800]);
+  const page = pdfDoc.addPage([600, 900]);
   const { width, height } = page.getSize();
-  const fontSize = 12;
+  const fontSize = 10;
   const drawText = (text: any, x: any, y: any, options = {}) => {
     page.drawText(text, {
       x,
       y,
       font: timesRomanFont,
       size: fontSize,
-      color: rgb(0, 0, 0),
+      color: rgb(0.42, 0.45, 0.50),
       ...options,
     });
   };
@@ -45,8 +45,13 @@ async function createInvoice(
       height: 75,
     });
   }
+  const { r: labelR, g: labelG, b: labelB } = hexToRgb(jsonData.labelColor);
   // Invoice Header
-  drawBoldText(jsonData.invoiceName, 50, height - 50, { size: 20 });
+  const { r: titleR, g: titleG, b: titleB } = hexToRgb(jsonData.titleColor);
+  drawBoldText(jsonData.invoiceName, 50, height - 50, {
+    size: 20,
+    color: rgb(titleR, titleG, titleB),
+  });
   drawText(`#${jsonData.invoiceNumber}`, 50, height - 70);
 
   // Company Details
@@ -58,7 +63,9 @@ async function createInvoice(
     owneryPosition -= 20;
   });
   // bill to
-  drawBoldText(jsonData.billToLabel, 50, height - 180);
+  drawBoldText(jsonData.billToLabel, 50, height - 180, {
+    color: rgb(labelR, labelG, labelB),
+  });
   let billToyPosition = height - 200;
   jsonData.billTo.split(",").forEach((line) => {
     line = line.trim();
@@ -68,7 +75,9 @@ async function createInvoice(
 
   // ship to
   if (jsonData.shipTo) {
-    drawBoldText(jsonData.shipToLabel, 200, height - 180);
+    drawBoldText(jsonData.shipToLabel, 200, height - 180, {
+      color: rgb(labelR, labelG, labelB),
+    });
     let shipToyPosition = height - 200;
     jsonData.shipTo.split(",").forEach((line) => {
       line = line.trim();
@@ -81,25 +90,33 @@ async function createInvoice(
   let detailsYPosition = height - 180;
 
   if (jsonData.date) {
-    drawText(jsonData.dateLabel, 350, detailsYPosition);
+    drawText(jsonData.dateLabel, 350, detailsYPosition, {
+      color: rgb(labelR, labelG, labelB),
+    });
     drawText(jsonData.date, 450, detailsYPosition);
     detailsYPosition -= 20;
   }
 
   if (jsonData.paymentTerms) {
-    drawText(jsonData.paymentTermsLabel, 350, detailsYPosition);
+    drawText(jsonData.paymentTermsLabel, 350, detailsYPosition, {
+      color: rgb(labelR, labelG, labelB),
+    });
     drawText(jsonData.paymentTerms, 450, detailsYPosition);
     detailsYPosition -= 20;
   }
 
   if (jsonData.dueDate) {
-    drawText(jsonData.dueDateLabel, 350, detailsYPosition);
+    drawText(jsonData.dueDateLabel, 350, detailsYPosition, {
+      color: rgb(labelR, labelG, labelB),
+    });
     drawText(jsonData.dueDate, 450, detailsYPosition);
     detailsYPosition -= 20;
   }
 
   if (jsonData.poNumber) {
-    drawText(jsonData.poNumberLabel, 350, detailsYPosition);
+    drawText(jsonData.poNumberLabel, 350, detailsYPosition, {
+      color: rgb(labelR, labelG, labelB),
+    });
     drawText(jsonData.poNumber, 450, detailsYPosition);
   }
 
@@ -108,6 +125,11 @@ async function createInvoice(
     g: tableG,
     b: tableB,
   } = hexToRgb(jsonData.tableHeaderColor);
+  const {
+    r: tableTitleR,
+    g: tableTitleG,
+    b: tableTitleB,
+  } = hexToRgb(jsonData.tableHeaderTitleColor);
   //  table header color
   page.drawRectangle({
     x: 40,
@@ -117,13 +139,17 @@ async function createInvoice(
     color: rgb(tableR, tableG, tableB),
   });
   // Table Headers
-  drawBoldText(jsonData.itemsLabel, 50, height - 280, { color: rgb(1, 1, 1) });
-  drawBoldText(jsonData.quantityLabel, 250, height - 280, {
-    color: rgb(1, 1, 1),
+  drawText(jsonData.itemsLabel, 50, height - 280, {
+    color: rgb(tableTitleR, tableTitleG, tableTitleB),
   });
-  drawBoldText(jsonData.rateLabel, 350, height - 280, { color: rgb(1, 1, 1) });
-  drawBoldText(jsonData.amountLabel, 450, height - 280, {
-    color: rgb(1, 1, 1),
+  drawText(jsonData.quantityLabel, 270, height - 280, {
+    color: rgb(tableTitleR, tableTitleG, tableTitleB),
+  });
+  drawText(jsonData.rateLabel, 350, height - 280, {
+    color: rgb(tableTitleR, tableTitleG, tableTitleB),
+  });
+  drawText(jsonData.amountLabel, 450, height - 280, {
+    color: rgb(tableTitleR, tableTitleG, tableTitleB),
   });
 
   // Table Items
@@ -131,7 +157,7 @@ async function createInvoice(
   jsonData.items.forEach((item) => {
     const amount = item.quantity * item.rate;
     drawText(item.itemName, 50, yPosition);
-    drawText(item.quantity.toString(), 250, yPosition);
+    drawText(item.quantity.toString(), 270, yPosition);
     drawText(
       `${jsonData?.currency?.currency}${item.rate.toFixed(2)}`,
       350,
@@ -147,7 +173,9 @@ async function createInvoice(
 
   // Summary
   yPosition -= 20;
-  drawBoldText(jsonData.subTotalLabel, 350, yPosition);
+  drawBoldText(jsonData.subTotalLabel, 350, yPosition, {
+    color: rgb(labelR, labelG, labelB),
+  });
   drawText(
     `${jsonData?.currency?.currency}${jsonData.subTotal.toFixed(2)}`,
     450,
@@ -156,7 +184,9 @@ async function createInvoice(
 
   if (jsonData.discount > 0) {
     yPosition -= 20;
-    drawBoldText(jsonData.discountLabel, 350, yPosition);
+    drawBoldText(jsonData.discountLabel, 350, yPosition, {
+      color: rgb(labelR, labelG, labelB),
+    });
     drawText(
       `-${jsonData?.currency?.currency}${jsonData.discount.toFixed(2)}`,
       450,
@@ -166,7 +196,9 @@ async function createInvoice(
 
   if (jsonData.tax > 0) {
     yPosition -= 20;
-    drawBoldText(jsonData.taxLabel, 350, yPosition);
+    drawBoldText(jsonData.taxLabel, 350, yPosition, {
+      color: rgb(labelR, labelG, labelB),
+    });
     drawText(
       `${jsonData?.currency?.currency}${jsonData.tax.toFixed(2)}`,
       450,
@@ -176,7 +208,9 @@ async function createInvoice(
 
   if (jsonData.shipping > 0) {
     yPosition -= 20;
-    drawBoldText(jsonData.shippingLabel, 350, yPosition);
+    drawBoldText(jsonData.shippingLabel, 350, yPosition, {
+      color: rgb(labelR, labelG, labelB),
+    });
     drawText(
       `${jsonData?.currency?.currency}${jsonData.shipping.toFixed(2)}`,
       450,
@@ -185,7 +219,9 @@ async function createInvoice(
   }
 
   yPosition -= 20;
-  drawBoldText(jsonData.totalLabel, 350, yPosition);
+  drawBoldText(jsonData.totalLabel, 350, yPosition, {
+    color: rgb(labelR, labelG, labelB),
+  });
   drawText(
     `${jsonData?.currency?.currency}${jsonData.total.toFixed(2)}`,
     450,
@@ -193,7 +229,9 @@ async function createInvoice(
   );
 
   yPosition -= 20;
-  drawBoldText(jsonData.amountPaidLabel, 350, yPosition);
+  drawBoldText(jsonData.amountPaidLabel, 350, yPosition, {
+    color: rgb(labelR, labelG, labelB),
+  });
   drawText(
     `-${jsonData?.currency?.currency}${jsonData.amountPaid.toFixed(2)}`,
     450,
@@ -201,7 +239,9 @@ async function createInvoice(
   );
 
   yPosition -= 20;
-  drawBoldText(jsonData.balanceDueLabel, 350, yPosition);
+  drawBoldText(jsonData.balanceDueLabel, 350, yPosition, {
+    color: rgb(labelR, labelG, labelB),
+  });
   drawText(
     `${jsonData?.currency?.currency}${jsonData.balanceDue.toFixed(2)}`,
     450,
@@ -210,12 +250,16 @@ async function createInvoice(
 
   // Notes
   yPosition -= 40;
-  drawBoldText(jsonData.notesLabel, 50, yPosition);
+  drawBoldText(jsonData.notesLabel, 50, yPosition, {
+    color: rgb(labelR, labelG, labelB),
+  });
   drawText(jsonData.notes, 50, yPosition - 20);
 
   // Terms
   yPosition -= 60;
-  drawBoldText(jsonData.termsLabel, 50, yPosition);
+  drawBoldText(jsonData.termsLabel, 50, yPosition, {
+    color: rgb(labelR, labelG, labelB),
+  });
   drawText(jsonData.terms, 50, yPosition - 20);
 
   const pdfBytes = await pdfDoc.save();

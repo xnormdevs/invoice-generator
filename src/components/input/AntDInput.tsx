@@ -14,6 +14,7 @@ export interface IAntDInput {
   prefix?: React.ReactNode;
   placeholder?: string;
   type?: "text" | "number";
+  textColor?: string;
 }
 const formatNumber = (value: number) => new Intl.NumberFormat().format(value);
 
@@ -47,6 +48,7 @@ const AntDInput = (props: IAntDInput) => {
         onChange={handleChange}
         prefix={props.prefix}
         placeholder={props.placeholder}
+        style={{ color: props?.textColor }}
       />
     </>
   );

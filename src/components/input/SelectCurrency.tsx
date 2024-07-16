@@ -1,5 +1,6 @@
 "use client";
-import currencies, { ICurrency } from "@/app/data/currency";
+import currencies  from "@/app/data/currency";
+import { ICurrency } from "@/types/IInvoiceBasicData";
 import { Select, Typography } from "antd";
 const { Title } = Typography;
 
