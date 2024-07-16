@@ -1,9 +1,8 @@
 'use client'
-import { ICurrency } from "@/app/data/currency";
+import { ICurrency, Item } from "@/types/IInvoiceBasicData";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row } from "antd";
 import { v4 as uuidv4 } from "uuid";
-import { Item } from "../invoice/Invoice";
 
 export interface IItemsInputForm {
   items: Item[];
