@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { Col, Row } from "antd";
 import React from "react";
 import AntDInput from "../input/AntDInput";
@@ -10,13 +10,16 @@ export interface IInputTableHeader {
   amountLabel: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   tableHeaderColor: string;
-
+  tableHeaderTitleColor: string;
 }
 const InputTableHeader = (props: IInputTableHeader) => {
   console.log(props.tableHeaderColor);
   return (
     <>
-      <Row className={`my-2 py-2 text-white rounded-md w-full`} style={{ backgroundColor: props?.tableHeaderColor }}>
+      <Row
+        className={`my-2 py-2 text-white rounded-md w-full`}
+        style={{ backgroundColor: props?.tableHeaderColor }}
+      >
         <Col span={14}>
           <AntDInput
             name="itemsLabel"
@@ -24,6 +27,7 @@ const InputTableHeader = (props: IInputTableHeader) => {
             variant="borderless"
             onChange={props.onChange}
             className="my-0.5 text-white focus:ring-0"
+            textColor={props.tableHeaderTitleColor}
           />
         </Col>
         <Col span={3}>
@@ -33,6 +37,7 @@ const InputTableHeader = (props: IInputTableHeader) => {
             variant="borderless"
             onChange={props.onChange}
             className="my-0.5 text-white focus:ring-0"
+            textColor={props.tableHeaderTitleColor}
           />
         </Col>
         <Col span={4}>
@@ -42,6 +47,7 @@ const InputTableHeader = (props: IInputTableHeader) => {
             variant="borderless"
             onChange={props.onChange}
             className="my-0.5 text-white focus:ring-0"
+            textColor={props.tableHeaderTitleColor}
           />
         </Col>
         <Col span={3}>
@@ -51,11 +57,10 @@ const InputTableHeader = (props: IInputTableHeader) => {
             variant="borderless"
             onChange={props.onChange}
             className="my-0.5 text-white focus:ring-0"
+            textColor={props.tableHeaderTitleColor}
           />
         </Col>
       </Row>
-
-      
     </>
   );
 };

@@ -1,7 +1,4 @@
-export interface ICurrency {
-  id: string;
-  currency: string;
-}
+import { ICurrency } from "@/types/IInvoiceBasicData";
 
 const currencies: ICurrency[] = [
   { id: "AED", currency: "د.إ" },

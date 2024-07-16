@@ -6,11 +6,12 @@ export interface IColorSelector {
   title: string;
   color: string;
   setColor: (val: string) => void;
+  className?: string;
 }
 
 const ColorSelector = (props: IColorSelector) => {
   const [value, setValue] = useState<ColorPickerProps["value"]>(props.color);
-//   console.log(typeof value === "string" ? value : value?.toHexString());
+  //   console.log(typeof value === "string" ? value : value?.toHexString());
 
   useEffect(() => {
     if (value)
@@ -18,7 +19,9 @@ const ColorSelector = (props: IColorSelector) => {
   }, [value]);
   return (
     <>
-      <Title level={5}>{props.title}</Title>
+      <Title level={5} className={props.className}>
+        {props.title}
+      </Title>
 
       <ColorPicker
         value={value}
