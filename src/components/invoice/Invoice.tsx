@@ -4,6 +4,8 @@ import {
   CloseOutlined,
   DownloadOutlined,
   PlusOutlined,
+  ReloadOutlined,
+  BgColorsOutlined,
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 
@@ -22,6 +24,8 @@ import InputTable from "../table/InputTable";
 import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
 import ColorSelector from "../colorSelect/ColorSelector";
 import PageSizeSelector from "../pageSize/SelectPagesSize";
+import { useDispatch, useSelector } from "react-redux";
+import { updateColors } from "@/redux/slices/ColorSlice";
 
 const defaultInvoiceData: InvoiceBasicData = {
   invoiceName: "INVOICE",
@@ -84,6 +88,9 @@ const defaultItem: Item = {
 };
 
 const Invoice: React.FC = () => {
+  const colors = useSelector((state: any) => state.colors);
+  const dispatch = useDispatch();
+  console.log(colors);
   const [invoiceData, setInvoiceData] =
     useState<InvoiceBasicData>(defaultInvoiceData);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -100,18 +107,18 @@ const Invoice: React.FC = () => {
   });
 
   //  theme values
-  const [labelColor, setLabelColor] = useState<string>(
-    defaultInvoiceData.labelColor
-  );
-  const [tableHeaderColor, setTableHeaderColor] = useState<string>(
-    defaultInvoiceData.tableHeaderColor
-  );
-  const [titleColor, setTitleColor] = useState<string>(
-    defaultInvoiceData.titleColor
-  );
-  const [tableHeaderTitleColor, setTableHeaderTitleColor] = useState<string>(
-    defaultInvoiceData.tableHeaderTitleColor
-  );
+  // const [labelColor, setLabelColor] = useState<string>(
+  //   defaultInvoiceData.labelColor
+  // );
+  // const [tableHeaderColor, setTableHeaderColor] = useState<string>(
+  //   defaultInvoiceData.tableHeaderColor
+  // );
+  // const [titleColor, setTitleColor] = useState<string>(
+  //   defaultInvoiceData.titleColor
+  // );
+  // const [tableHeaderTitleColor, setTableHeaderTitleColor] = useState<string>(
+  //   defaultInvoiceData.tableHeaderTitleColor
+  // );
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (invoiceData) {
       setInvoiceData({
@@ -120,7 +127,12 @@ const Invoice: React.FC = () => {
       });
     }
   };
-
+  // useEffect(() => {
+  //   setLabelColor(colors.labelColor);
+  //   setTitleColor(colors.titleColor);
+  //   setTableHeaderColor(colors.tableHeaderColor);
+  //   setTableHeaderTitleColor(colors.tableHeaderTitleColor);
+  // }, [defaultInvoiceData, colors]);
   useEffect(() => {
     const calculateTotal = () => {
       // Calculate subtotal
@@ -196,14 +208,10 @@ const Invoice: React.FC = () => {
       ...invoiceData,
       items: items,
       currency: currency,
-      tableHeaderColor: tableHeaderColor
-        ? tableHeaderColor
-        : defaultInvoiceData.tableHeaderColor,
-      titleColor: titleColor ? titleColor : defaultInvoiceData.titleColor,
-      labelColor: labelColor ? labelColor : defaultInvoiceData.labelColor,
-      tableHeaderTitleColor: tableHeaderTitleColor
-        ? tableHeaderTitleColor
-        : defaultInvoiceData.tableHeaderTitleColor,
+      tableHeaderColor: colors.tableHeaderColor,
+      titleColor: colors.titleColor,
+      labelColor: colors.labelColor,
+      tableHeaderTitleColor: colors.tableHeaderTitleColor,
     };
 
     // console.log(fileList[0]);
@@ -218,10 +226,33 @@ const Invoice: React.FC = () => {
     setShippingApply(false);
     setItems([defaultItem]);
     setCurrency({ id: "USD", currency: "$" });
-    setLabelColor(defaultInvoiceData.labelColor);
-    setTableHeaderColor(defaultInvoiceData.tableHeaderColor);
-    setTitleColor(defaultInvoiceData.titleColor);
-    setTableHeaderTitleColor(defaultInvoiceData.tableHeaderTitleColor);
+  };
+
+  const onResetColors = () => {
+    dispatch(
+      updateColors({
+        colorKey: "titleColor",
+        value: defaultInvoiceData.titleColor,
+      })
+    );
+    dispatch(
+      updateColors({
+        colorKey: "labelColor",
+        value: defaultInvoiceData.labelColor,
+      })
+    );
+    dispatch(
+      updateColors({
+        colorKey: "tableHeaderColor",
+        value: defaultInvoiceData.tableHeaderColor,
+      })
+    );
+    dispatch(
+      updateColors({
+        colorKey: "tableHeaderTitleColor",
+        value: defaultInvoiceData.tableHeaderTitleColor,
+      })
+    );
   };
   return (
     <React.Fragment>
@@ -251,7 +282,7 @@ const Invoice: React.FC = () => {
                   variant="borderless"
                   onChange={onChangeInput}
                   className={`text-4xl h-10 mb-2 font-bold`}
-                  textColor={titleColor}
+                  textColor={colors.titleColor}
                 />
                 <AntDInput
                   name="invoiceNumber"
@@ -288,7 +319,7 @@ const Invoice: React.FC = () => {
                       variant="borderless"
                       onChange={onChangeInput}
                       className="mb-2"
-                      textColor={labelColor}
+                      textColor={colors.labelColor}
                     />
                     <AntDTextArea
                       name="billTo"
@@ -305,7 +336,7 @@ const Invoice: React.FC = () => {
                       variant="borderless"
                       onChange={onChangeInput}
                       className="mb-2"
-                      textColor={labelColor}
+                      textColor={colors.labelColor}
                     />
                     <AntDTextArea
                       name="shipTo"
@@ -325,7 +356,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right mr-5"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <AntDDatePicker
                     name="date"
@@ -342,7 +373,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right mr-5"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <AntDInput
                     name="paymentTerms"
@@ -359,7 +390,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right mr-5"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <AntDDatePicker
                     name="dueDate"
@@ -376,7 +407,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right mr-5"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <AntDInput
                     name="poNumber"
@@ -398,8 +429,8 @@ const Invoice: React.FC = () => {
               amountLabel={invoiceData?.amountLabel}
               onChange={onChangeInput}
               currency={currency}
-              tableHeaderColor={tableHeaderColor}
-              tableHeaderTitleColor={tableHeaderTitleColor}
+              tableHeaderColor={colors.tableHeaderColor}
+              tableHeaderTitleColor={colors.tableHeaderTitleColor}
             />
 
             {/*  bottom section */}
@@ -418,7 +449,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="mb-2"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <AntDTextArea
                     name="notes"
@@ -435,7 +466,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="mb-2"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <AntDTextArea
                     name="terms"
@@ -454,7 +485,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right flex-1"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <p className="amount">
                     {currency.currency} {invoiceData.subTotal}
@@ -469,7 +500,7 @@ const Invoice: React.FC = () => {
                       variant="borderless"
                       onChange={onChangeInput}
                       className="text-right flex-1"
-                      textColor={labelColor}
+                      textColor={colors.labelColor}
                     />
                     <InputWithButton
                       name="discount"
@@ -499,7 +530,7 @@ const Invoice: React.FC = () => {
                       variant="borderless"
                       onChange={onChangeInput}
                       className="text-right flex-1"
-                      textColor={labelColor}
+                      textColor={colors.labelColor}
                     />
                     <InputWithButton
                       name="tax"
@@ -530,7 +561,7 @@ const Invoice: React.FC = () => {
                       variant="borderless"
                       onChange={onChangeInput}
                       className="text-right flex-1"
-                      textColor={labelColor}
+                      textColor={colors.labelColor}
                     />
                     <AntDInput
                       name="shipping"
@@ -588,7 +619,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right flex-1"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <p className="amount">
                     {currency.currency} {invoiceData.total}
@@ -601,7 +632,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right flex-1"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <AntDInput
                     type="number"
@@ -624,7 +655,7 @@ const Invoice: React.FC = () => {
                     variant="borderless"
                     onChange={onChangeInput}
                     className="text-right flex-1"
-                    textColor={labelColor}
+                    textColor={colors.labelColor}
                   />
                   <p className="amount">
                     {currency.currency} {invoiceData?.balanceDue}
@@ -634,51 +665,63 @@ const Invoice: React.FC = () => {
             </Flex>
           </Form>
         </Col>
-        <Col span={3} offset={2}>
+        <Col span={3} offset={2} className="w-full">
           {/* color picker */}
           <ColorSelector
-            color={titleColor}
-            setColor={setTitleColor}
+            color={colors.titleColor}
+            // setColor={setTitleColor}
             title="Title Color"
+            colorKey="titleColor"
           />
           <ColorSelector
-            color={labelColor}
-            setColor={setLabelColor}
+            color={colors.labelColor}
+            // setColor={setLabelColor}
             title="Label Color"
             className="mt-4"
+            colorKey="labelColor"
           />
           <ColorSelector
-            color={tableHeaderColor}
-            setColor={setTableHeaderColor}
+            color={colors.tableHeaderColor}
+            // setColor={setTableHeaderColor}
             title="Table Header Color"
             className="mt-4"
+            colorKey="tableHeaderColor"
           />
           <ColorSelector
-            color={tableHeaderTitleColor}
-            setColor={setTableHeaderTitleColor}
+            color={colors.tableHeaderTitleColor}
+            // setColor={setTableHeaderTitleColor}
             title="Table Header Title Color"
             className="mt-4"
+            colorKey="tableHeaderTitleColor"
           />
           {/* <PageSizeSelector /> */}
           <SelectCurrency currency={currency} setCurrency={setCurrency} />
           <Divider />
-
+          <AntDButton
+            icon={<DownloadOutlined />}
+            title="Download"
+            clickEvent={onFinish}
+            className="w-72"
+            size="large"
+            colorType="infoColors"
+          />
           <div className="flex items-center mt-4">
-            <AntDButton
-              icon={<DownloadOutlined />}
-              title="Download"
-              clickEvent={onFinish}
-              className="w-40"
-              size="large"
-              colorType="infoColors"
-            />
             {/*  reset button */}
             <AntDButton
-              title="Reset"
+              title="Reset Form"
               clickEvent={onReset}
-              className="ml-6 w-40"
+              className="w-36"
               size="large"
               colorType="dangerColors"
+              icon={<ReloadOutlined />}
+            />
+            <AntDButton
+              title="Reset Colors"
+              clickEvent={onResetColors}
+              className="ml-2 w-36"
+              size="large"
+              colorType="dangerColors"
+              icon={<BgColorsOutlined />}
             />
           </div>
         </Col>

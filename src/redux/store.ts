@@ -11,6 +11,7 @@ import {
 } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 import itemsSlice from "./slices/ItemsSlice";
+import colorSlice from "./slices/ColorSlice";
 
 const persistConfig = {
   key: "root",
@@ -19,6 +20,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   items: itemsSlice,
+  colors: colorSlice,
   // Add other reducers here if you have more
 });
 
