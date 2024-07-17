@@ -39,6 +39,9 @@ const ItemsInputForm = (props: IItemsInputForm) => {
   const dispatch = useDispatch();
   const items = useSelector((state: any) => state.items);
   const { showMessage } = useMessage();
+  const [name, setName] = useState<string | undefined>(undefined);
+  const inputRef = useRef<InputRef>(null);
+  const selectRef = useRef<any>(null);
   // console.log(items);
 
   const addItem = () => {
@@ -67,10 +70,6 @@ const ItemsInputForm = (props: IItemsInputForm) => {
   const removeAllItems = () => {
     props.setItems([defaultItem]);
   };
-
-  // const [items, setItems] = useState(["jack", "lucy"]);
-  const [name, setName] = useState<string | undefined>(undefined);
-  const inputRef = useRef<InputRef>(null);
 
   const onNameChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -114,24 +113,34 @@ const ItemsInputForm = (props: IItemsInputForm) => {
             /> */}
             <Select
               showSearch
+              ref={selectRef}
               style={{ width: "100%" }}
               placeholder="Description of item/service..."
+              value={item.itemName}
               dropdownRender={(menu) => (
                 <>
+                  {/* {menu} */}
                   <List
                     dataSource={items}
-                    renderItem={(item: ReduxItems) => (
+                    renderItem={(reduxItem: ReduxItems) => (
                       <List.Item
                         className="cursor-pointer mx-10"
-                        key={item.id}
+                        key={reduxItem.id}
+                        onClick={() => {
+                          handleChange(item.id, "itemName", reduxItem.name);
+                          selectRef?.current?.blur();
+                        }}
                         actions={[
                           <DeleteOutlined
-                            onClick={() => deleteFromRedux(item.id)}
-                            key="edit"
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent triggering List.Item onClick
+                              deleteFromRedux(reduxItem.id);
+                            }}
+                            key={item.id}
                           />,
                         ]}
                       >
-                        {item.name}
+                        {reduxItem.name}
                       </List.Item>
                     )}
                   />
@@ -171,7 +180,7 @@ const ItemsInputForm = (props: IItemsInputForm) => {
               type="number"
               value={item.quantity}
               onChange={(e) =>
-                handleChange(item.id, "quantity", parseInt(e.target.value) || 0)
+                handleChange(item.id, "quantity", parseFloat(e.target.value) || 0)
               }
             />
           </Col>
