@@ -1,7 +1,8 @@
-import {configureStore} from '@reduxjs/toolkit';
+import { configureStore } from "@reduxjs/toolkit";
+import itemsSlice from "./slices/ItemsSlice";
 
 export const store = configureStore({
-    reducer:{
-        
-    }
-})
+  reducer: {
+    items: itemsSlice,
+  },
+});

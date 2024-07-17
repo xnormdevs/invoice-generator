@@ -1,4 +1,10 @@
 "use client";
+import { useMessage } from "@/hooks/useMessage";
+import {
+  deleteItems,
+  insertItems,
+  ReduxItems,
+} from "@/redux/slices/ItemsSlice";
 import { ICurrency, Item } from "@/types/IInvoiceBasicData";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import {
@@ -7,11 +13,13 @@ import {
   Divider,
   Input,
   InputRef,
+  List,
   Row,
   Select,
   Space,
 } from "antd";
 import { useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
 
 export interface IItemsInputForm {
@@ -28,6 +36,11 @@ const defaultItem: Item = {
 };
 
 const ItemsInputForm = (props: IItemsInputForm) => {
+  const dispatch = useDispatch();
+  const items = useSelector((state: any) => state.items);
+  const { showMessage } = useMessage();
+  // console.log(items);
+
   const addItem = () => {
     const newItem: Item = { ...defaultItem, id: uuidv4() };
     props.setItems([...props.items, newItem]);
@@ -48,9 +61,6 @@ const ItemsInputForm = (props: IItemsInputForm) => {
       }
       return item;
     });
-    if (field === "itemName") {
-      // updateReduxItems(value.toString());
-    }
     props.setItems(updatedItems);
   };
 
@@ -58,23 +68,37 @@ const ItemsInputForm = (props: IItemsInputForm) => {
     props.setItems([defaultItem]);
   };
 
-  const [items, setItems] = useState(["jack", "lucy"]);
-  const [name, setName] = useState("");
+  // const [items, setItems] = useState(["jack", "lucy"]);
+  const [name, setName] = useState<string | undefined>(undefined);
   const inputRef = useRef<InputRef>(null);
 
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: string
+  ) => {
     setName(event.target.value);
+    handleChange(id, "itemName", event.target.value);
   };
-  let index = 0;
+
   const addItems = (
     e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
   ) => {
-    e.preventDefault();
-    setItems([...items, name || `New item ${index++}`]);
-    setName("");
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
+    if (name) {
+      e.preventDefault();
+      dispatch(insertItems(name));
+      // setItems([...items, name || `New item ${index++}`]);
+      setName(undefined);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
+    } else {
+      showMessage({ type: "error", content: "Item name is required" });
+    }
+  };
+
+  const deleteFromRedux = (id: string) => {
+    // console.log("delete item", id);
+    dispatch(deleteItems(id));
   };
   return (
     <>
@@ -90,11 +114,27 @@ const ItemsInputForm = (props: IItemsInputForm) => {
             /> */}
             <Select
               showSearch
-              style={{ width: '100%' }}
+              style={{ width: "100%" }}
               placeholder="Description of item/service..."
               dropdownRender={(menu) => (
                 <>
-                  {menu}
+                  <List
+                    dataSource={items}
+                    renderItem={(item: ReduxItems) => (
+                      <List.Item
+                        className="cursor-pointer mx-10"
+                        key={item.id}
+                        actions={[
+                          <DeleteOutlined
+                            onClick={() => deleteFromRedux(item.id)}
+                            key="edit"
+                          />,
+                        ]}
+                      >
+                        {item.name}
+                      </List.Item>
+                    )}
+                  />
                   <Divider style={{ margin: "8px 0" }} />
                   <Space style={{ padding: "0 8px 4px", width: "100%" }}>
                     <Input
@@ -102,7 +142,7 @@ const ItemsInputForm = (props: IItemsInputForm) => {
                       className="w-full"
                       ref={inputRef}
                       value={name}
-                      onChange={onNameChange}
+                      onChange={(e) => onNameChange(e, item.id)}
                       onKeyDown={(e) => e.stopPropagation()}
                     />
                     <Button
@@ -115,8 +155,11 @@ const ItemsInputForm = (props: IItemsInputForm) => {
                   </Space>
                 </>
               )}
-              options={items.map((item) => ({ label: item, value: item }))}
-              filterSort={(optionA, optionB) =>
+              options={items?.map((item: ReduxItems) => ({
+                label: item.name,
+                value: item.name,
+              }))}
+              filterSort={(optionA: any, optionB: any) =>
                 (optionA?.label ?? "")
                   .toLowerCase()
                   .localeCompare((optionB?.label ?? "").toLowerCase())
