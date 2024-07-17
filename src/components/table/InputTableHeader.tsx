@@ -13,7 +13,6 @@ export interface IInputTableHeader {
   tableHeaderTitleColor: string;
 }
 const InputTableHeader = (props: IInputTableHeader) => {
-  console.log(props.tableHeaderColor);
   return (
     <>
       <Row

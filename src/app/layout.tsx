@@ -3,6 +3,8 @@ import { Inter, Roboto } from "next/font/google";
 import { NextAuthProvider } from "./providers";
 import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
+import Providers from "@/redux/Provider";
+import { MessageProvider } from "@/hooks/useMessage";
 
 const inter = Inter({ subsets: ["latin"] });
 const roboto = Roboto({
@@ -25,8 +27,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <NextAuthProvider>
-          <Navbar />
-          <main className={roboto.className}>{children}</main>
+          <MessageProvider>
+            <Providers>
+              <Navbar />
+              <main className={roboto.className}>{children}</main>
+            </Providers>
+          </MessageProvider>
         </NextAuthProvider>
       </body>
     </html>

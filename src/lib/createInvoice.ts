@@ -22,7 +22,7 @@ async function createInvoice(
       y,
       font: timesRomanFont,
       size: fontSize,
-      color: rgb(0.42, 0.45, 0.50),
+      color: rgb(0.42, 0.45, 0.5),
       ...options,
     });
   };
@@ -159,7 +159,7 @@ async function createInvoice(
     drawText(item.itemName, 50, yPosition);
     drawText(item.quantity.toString(), 270, yPosition);
     drawText(
-      `${jsonData?.currency?.currency}${item.rate.toFixed(2)}`,
+      `${jsonData?.currency?.currency}${Number(item.rate).toFixed(2)}`,
       350,
       yPosition
     );
@@ -188,7 +188,7 @@ async function createInvoice(
       color: rgb(labelR, labelG, labelB),
     });
     drawText(
-      `-${jsonData?.currency?.currency}${jsonData.discount.toFixed(2)}`,
+      `-${jsonData?.currency?.currency}${Number(jsonData.discount).toFixed(2)}`,
       450,
       yPosition
     );
@@ -200,7 +200,7 @@ async function createInvoice(
       color: rgb(labelR, labelG, labelB),
     });
     drawText(
-      `${jsonData?.currency?.currency}${jsonData.tax.toFixed(2)}`,
+      `${jsonData?.currency?.currency}${Number(jsonData.tax).toFixed(2)}`,
       450,
       yPosition
     );
@@ -212,7 +212,7 @@ async function createInvoice(
       color: rgb(labelR, labelG, labelB),
     });
     drawText(
-      `${jsonData?.currency?.currency}${jsonData.shipping.toFixed(2)}`,
+      `${jsonData?.currency?.currency}${Number(jsonData.shipping).toFixed(2)}`,
       450,
       yPosition
     );
@@ -233,7 +233,7 @@ async function createInvoice(
     color: rgb(labelR, labelG, labelB),
   });
   drawText(
-    `-${jsonData?.currency?.currency}${jsonData.amountPaid.toFixed(2)}`,
+    `-${jsonData?.currency?.currency}${Number(jsonData.amountPaid).toFixed(2)}`,
     450,
     yPosition
   );
@@ -284,7 +284,7 @@ export async function generatePDF(
   data: InvoiceBasicData,
   file?: UploadFile | undefined
 ) {
-  console.log(data);
+  // console.log(data);
   createInvoice(data, file).then((pdfBytes) => {
     downloadPdf(pdfBytes);
   });
