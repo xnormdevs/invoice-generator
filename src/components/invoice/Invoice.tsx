@@ -9,7 +9,6 @@ import {
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 
-import { generatePDF } from "@/lib/createInvoice";
 import { Col, Divider, Flex, Form, Row, UploadFile } from "antd";
 import React, { useEffect, useState } from "react";
 import AntDButton from "../button/AntDButton";
@@ -26,6 +25,7 @@ import ColorSelector from "../colorSelect/ColorSelector";
 import PageSizeSelector from "../pageSize/SelectPagesSize";
 import { useDispatch, useSelector } from "react-redux";
 import { updateColors } from "@/redux/slices/ColorSlice";
+import { generatePDF } from "@/lib/invoiceGenerator/createInvoice";
 
 const defaultInvoiceData: InvoiceBasicData = {
   invoiceName: "INVOICE",
