@@ -1,22 +1,30 @@
+import { ReduxColors, updateColors } from "@/redux/slices/ColorSlice";
 import { ColorPicker, ColorPickerProps, Typography } from "antd";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 const { Title } = Typography;
 
 export interface IColorSelector {
   title: string;
   color: string;
-  setColor: (val: string) => void;
+  // setColor: (val: string) => void;
   className?: string;
+  colorKey: keyof ReduxColors;
 }
 
 const ColorSelector = (props: IColorSelector) => {
-  const [value, setValue] = useState<ColorPickerProps["value"]>(props.color);
-  //   console.log(typeof value === "string" ? value : value?.toHexString());
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (value)
-      props.setColor(typeof value === "string" ? value : value?.toHexString());
-  }, [value]);
+  const updateColorsOnRedux = (value: ColorPickerProps["value"]) => {
+    if (value) {
+      const updatedValue: string =
+        typeof value === "string" ? value : value?.toHexString();
+      // props.setColor(updatedValue);
+      console.log("value in compoenet", props.colorKey, updatedValue);
+      dispatch(updateColors({ colorKey: props.colorKey, value: updatedValue }));
+    }
+  };
+
   return (
     <>
       <Title level={5} className={props.className}>
@@ -24,9 +32,9 @@ const ColorSelector = (props: IColorSelector) => {
       </Title>
 
       <ColorPicker
-        value={value}
+        value={props.color}
         onChangeComplete={(color) => {
-          setValue(color);
+          updateColorsOnRedux(color);
         }}
         showText
       />
