@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { ICurrency, Item } from "@/types/IInvoiceBasicData";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Col, Input, Row } from "antd";
@@ -38,9 +38,12 @@ const ItemsInputForm = (props: IItemsInputForm) => {
       }
       return item;
     });
-
+    if (field === "itemName") {
+      // updateReduxItems(value.toString());
+    }
     props.setItems(updatedItems);
   };
+
 
   const removeAllItems = () => {
     props.setItems([defaultItem]);
