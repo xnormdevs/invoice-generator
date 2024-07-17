@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@pdfme/common": "^4.1.0",
+    "@pdfme/generator": "^4.1.0",
+    "@pdfme/ui": "^4.1.0",
     "@reduxjs/toolkit": "^2.2.6",
     "@types/uuid": "^10.0.0",
     "antd": "^5.19.1",

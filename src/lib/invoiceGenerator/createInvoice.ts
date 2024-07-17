@@ -1,6 +1,6 @@
 import { UploadFile } from "antd";
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { hexToRgb } from "./colorFuncs";
+import { hexToRgb } from "../colorFuncs";
 import { InvoiceBasicData } from "@/types/IInvoiceBasicData";
 
 async function createInvoice(
