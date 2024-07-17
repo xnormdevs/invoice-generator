@@ -25,7 +25,7 @@ const SelectCurrency = (props: ISelectCurrency) => {
       <Title level={5} className="mt-4">Currency</Title>
       <Select
         showSearch
-        className="w-full"
+        className="w-72"
         placeholder="Select a currecny"
         filterOption={(input, option) =>
           String(option?.label ?? "")

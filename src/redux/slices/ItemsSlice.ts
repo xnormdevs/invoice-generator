@@ -6,7 +6,7 @@ export interface ReduxItems {
   name: string;
 }
 
-const initialState: any = [];
+const initialState: ReduxItems | any = [];
 
 const itemsSlice = createSlice({
   name: "items",
