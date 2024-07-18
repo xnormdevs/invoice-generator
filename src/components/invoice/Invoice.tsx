@@ -1,11 +1,11 @@
 "use client";
 
 import {
+  BgColorsOutlined,
   CloseOutlined,
   DownloadOutlined,
   PlusOutlined,
   ReloadOutlined,
-  BgColorsOutlined,
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 
@@ -21,11 +21,10 @@ import InputWithButton from "../input/InputWithButton";
 import SelectCurrency from "../input/SelectCurrency";
 import InputTable from "../table/InputTable";
 
-import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
-import ColorSelector from "../colorSelect/ColorSelector";
-import PageSizeSelector from "../pageSize/SelectPagesSize";
-import { useDispatch, useSelector } from "react-redux";
 import { updateColors } from "@/redux/slices/ColorSlice";
+import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
+import { useDispatch, useSelector } from "react-redux";
+import ColorSelector from "../colorSelect/ColorSelector";
 
 const defaultInvoiceData: InvoiceBasicData = {
   invoiceName: "INVOICE",
@@ -89,8 +88,9 @@ const defaultItem: Item = {
 
 const Invoice: React.FC = () => {
   const colors = useSelector((state: any) => state.colors);
+  const labels = useSelector((state: any) => state.labels);
+
   const dispatch = useDispatch();
-  console.log(colors);
   const [invoiceData, setInvoiceData] =
     useState<InvoiceBasicData>(defaultInvoiceData);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
@@ -106,19 +106,6 @@ const Invoice: React.FC = () => {
     currency: "$",
   });
 
-  //  theme values
-  // const [labelColor, setLabelColor] = useState<string>(
-  //   defaultInvoiceData.labelColor
-  // );
-  // const [tableHeaderColor, setTableHeaderColor] = useState<string>(
-  //   defaultInvoiceData.tableHeaderColor
-  // );
-  // const [titleColor, setTitleColor] = useState<string>(
-  //   defaultInvoiceData.titleColor
-  // );
-  // const [tableHeaderTitleColor, setTableHeaderTitleColor] = useState<string>(
-  //   defaultInvoiceData.tableHeaderTitleColor
-  // );
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (invoiceData) {
       setInvoiceData({
@@ -127,12 +114,7 @@ const Invoice: React.FC = () => {
       });
     }
   };
-  // useEffect(() => {
-  //   setLabelColor(colors.labelColor);
-  //   setTitleColor(colors.titleColor);
-  //   setTableHeaderColor(colors.tableHeaderColor);
-  //   setTableHeaderTitleColor(colors.tableHeaderTitleColor);
-  // }, [defaultInvoiceData, colors]);
+
   useEffect(() => {
     const calculateTotal = () => {
       // Calculate subtotal
