@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface InvoiceLabels {
   billToLabel: string;
@@ -48,9 +48,20 @@ const labelSlice = createSlice({
   name: "labels",
   initialState,
   reducers: {
-    updateColors: (state, action) => {},
+    updateLabels: (state, action) => {
+      const data: InvoiceLabels = action.payload;
+      Object.keys(data).forEach((key) => {
+        state[key as keyof InvoiceLabels] = data[key as keyof InvoiceLabels];
+      });
+    },
+    resetLabels: (state) => {
+      Object.keys(initialState).forEach((key) => {
+        state[key as keyof InvoiceLabels] =
+          initialState[key as keyof InvoiceLabels];
+      });
+    },
   },
 });
 
-export const { updateColors } = labelSlice.actions;
+export const { updateLabels, resetLabels } = labelSlice.actions;
 export default labelSlice.reducer;
