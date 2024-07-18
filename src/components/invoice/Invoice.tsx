@@ -25,6 +25,11 @@ import { updateColors } from "@/redux/slices/ColorSlice";
 import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
 import { useDispatch, useSelector } from "react-redux";
 import ColorSelector from "../colorSelect/ColorSelector";
+import {
+  InvoiceLabels,
+  resetLabels,
+  updateLabels,
+} from "@/redux/slices/LabelSlice";
 
 const defaultInvoiceData: InvoiceBasicData = {
   invoiceName: "INVOICE",
@@ -116,6 +121,13 @@ const Invoice: React.FC = () => {
   };
 
   useEffect(() => {
+    setInvoiceData({
+      ...defaultInvoiceData,
+      ...labels,
+    });
+  }, [labels]);
+
+  useEffect(() => {
     const calculateTotal = () => {
       // Calculate subtotal
       const tempSubTotal: number = items.reduce((acc, item) => {
@@ -196,13 +208,40 @@ const Invoice: React.FC = () => {
       tableHeaderTitleColor: colors.tableHeaderTitleColor,
     };
 
+    // set the lable names into the redux
+    let labelNames: InvoiceLabels = {} as InvoiceLabels;
+    const isInvoiceLabelKey = (key: string): key is keyof InvoiceLabels => {
+      return key.includes("Label");
+    };
+
+    Object.keys(data).forEach((key) => {
+      if (isInvoiceLabelKey(key)) {
+        labelNames = {
+          ...labelNames,
+          [key]: data[key as keyof InvoiceBasicData] as string,
+        };
+      }
+    });
+    // console.log(labelNames);
+    dispatch(updateLabels(labelNames));
+
     // console.log(fileList[0]);
     // const generatedData: InvoiceBasicData = sampleData;
     await generatePDF(data, fileList[0] ? fileList[0] : undefined);
   };
   const onReset = () => {
     setFileList([]);
-    setInvoiceData(defaultInvoiceData);
+    let resetDefaultData: InvoiceBasicData = { ...invoiceData };
+    Object.keys(defaultInvoiceData).forEach((key) => {
+      if (!key.includes("Label")) {
+        resetDefaultData = {
+          ...resetDefaultData,
+          [key as keyof InvoiceBasicData]:
+            defaultInvoiceData[key as keyof InvoiceBasicData],
+        };
+      }
+    });
+    setInvoiceData(resetDefaultData);
     setTaxApply(false);
     setDiscountApply(false);
     setShippingApply(false);
@@ -235,6 +274,21 @@ const Invoice: React.FC = () => {
         value: defaultInvoiceData.tableHeaderTitleColor,
       })
     );
+  };
+
+  const onResetLabels = () => {
+    let resetDefaultData: InvoiceBasicData = { ...invoiceData };
+    Object.keys(defaultInvoiceData).forEach((key) => {
+      if (key.includes("Label")) {
+        resetDefaultData = {
+          ...resetDefaultData,
+          [key as keyof InvoiceBasicData]:
+            defaultInvoiceData[key as keyof InvoiceBasicData],
+        };
+      }
+    });
+    setInvoiceData(resetDefaultData);
+    dispatch(resetLabels());
   };
   return (
     <React.Fragment>
@@ -693,7 +747,15 @@ const Invoice: React.FC = () => {
               title="Reset Form"
               clickEvent={onReset}
               className="w-36"
-              size="large"
+              size="middle"
+              colorType="dangerColors"
+              icon={<ReloadOutlined />}
+            />
+            <AntDButton
+              title="Reset Labels"
+              clickEvent={onResetLabels}
+              className="w-36 ml-2"
+              size="middle"
               colorType="dangerColors"
               icon={<ReloadOutlined />}
             />
@@ -701,7 +763,7 @@ const Invoice: React.FC = () => {
               title="Reset Colors"
               clickEvent={onResetColors}
               className="ml-2 w-36"
-              size="large"
+              size="middle"
               colorType="dangerColors"
               icon={<BgColorsOutlined />}
             />

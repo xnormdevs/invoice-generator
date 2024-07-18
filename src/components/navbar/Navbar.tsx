@@ -35,9 +35,6 @@ const Navbar = () => {
           <Link href="/info" className="text-gray-300 hover:text-white ml-4">
             Info
           </Link>
-          <Link href="/contact" className="text-gray-300 hover:text-white ml-4">
-            Contact
-          </Link>
 
           <div className="ml-4">
             {data?.user ? (
