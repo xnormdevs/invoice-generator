@@ -22,6 +22,21 @@ export default function Home() {
           />
         </Card>
       </Link>
+
+      <Link legacyBehavior href="/letter-generator">
+        <Card
+          hoverable
+          style={{ width: 240 }}
+          cover={
+            <Image src="/invoice.png" alt="letter" width={100} height={100} />
+          }
+        >
+          <Meta
+            title="Free Letter Generator"
+            description="Generate your free letter in seconds."
+          />
+        </Card>
+      </Link>
     </main>
   );
 }

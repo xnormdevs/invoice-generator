@@ -4,12 +4,11 @@ import {
   BgColorsOutlined,
   CloseOutlined,
   DownloadOutlined,
+  FileTextOutlined,
   PlusOutlined,
   ReloadOutlined,
-  FileTextOutlined,
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
-import Head from "next/head";
 
 import { generatePDF, viewGeneratedPDF } from "@/lib/createInvoice";
 import { Col, Divider, Flex, Form, Row, UploadFile } from "antd";
@@ -24,14 +23,19 @@ import SelectCurrency from "../input/SelectCurrency";
 import InputTable from "../table/InputTable";
 
 import { updateColors } from "@/redux/slices/ColorSlice";
-import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
-import { useDispatch, useSelector } from "react-redux";
-import ColorSelector from "../colorSelect/ColorSelector";
 import {
   InvoiceLabels,
   resetLabels,
   updateLabels,
 } from "@/redux/slices/LabelSlice";
+import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
+import { useDispatch, useSelector } from "react-redux";
+import ColorSelector from "../colorSelect/ColorSelector";
+import {
+  onChangeDateFunc,
+  onChangeInputFunc,
+  onChangeTextAreaFunc,
+} from "@/lib/commonFunc";
 
 const defaultInvoiceData: InvoiceBasicData = {
   invoiceName: "INVOICE",
@@ -114,14 +118,15 @@ const Invoice: React.FC = () => {
   });
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (invoiceData) {
-      setInvoiceData({
-        ...invoiceData,
-        [e.target.name]: e.target.value,
-      });
-    }
+    onChangeInputFunc(e, setInvoiceData, invoiceData);
+  };
+  const onChangeDate = (name: string, value: any) => {
+    onChangeDateFunc(name, value, setInvoiceData, invoiceData);
   };
 
+  const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChangeTextAreaFunc(e, setInvoiceData, invoiceData);
+  };
   useEffect(() => {
     setInvoiceData({
       ...defaultInvoiceData,
@@ -180,24 +185,6 @@ const Invoice: React.FC = () => {
     invoiceData.shipping,
     invoiceData.amountPaid,
   ]);
-
-  const onChangeDate = (name: string, value: any) => {
-    if (invoiceData) {
-      setInvoiceData({
-        ...invoiceData,
-        [name]: value,
-      });
-    }
-  };
-
-  const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (invoiceData) {
-      setInvoiceData({
-        ...invoiceData,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
   const onFinish = async () => {
     // console.log(fileList[0]);
     // const generatedData: InvoiceBasicData = sampleData;
@@ -304,11 +291,7 @@ const Invoice: React.FC = () => {
     dispatch(resetLabels());
   };
   return (
-    <main>
-       <Head>
-        <title>Invoices</title>
-        <meta name="description" content="App to generate free PDF for your business invoices" />
-      </Head>
+    <React.Fragment>
       <Row className="mx-auto max-w-[1600px]">
         <Col span={18}>
           <Form
@@ -797,7 +780,7 @@ const Invoice: React.FC = () => {
           </div>
         </Col>
       </Row>
-    </main>
+    </React.Fragment>
   );
 };
 

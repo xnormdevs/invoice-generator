@@ -18,6 +18,7 @@ import {
   Select,
   Space,
 } from "antd";
+import React from "react";
 import { useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
@@ -100,7 +101,7 @@ const ItemsInputForm = (props: IItemsInputForm) => {
     dispatch(deleteItems(id));
   };
   return (
-    <>
+    <React.Fragment>
       {props.items.map((item) => (
         <Row key={item.id} gutter={16} className="my-1">
           <Col span={14}>
@@ -180,7 +181,11 @@ const ItemsInputForm = (props: IItemsInputForm) => {
               type="number"
               value={item.quantity}
               onChange={(e) =>
-                handleChange(item.id, "quantity", parseFloat(e.target.value) || 0)
+                handleChange(
+                  item.id,
+                  "quantity",
+                  parseFloat(e.target.value) || 0
+                )
               }
             />
           </Col>
@@ -219,7 +224,7 @@ const ItemsInputForm = (props: IItemsInputForm) => {
           Reset Items
         </Button>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 
