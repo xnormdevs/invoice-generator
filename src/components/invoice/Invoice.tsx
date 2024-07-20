@@ -6,10 +6,12 @@ import {
   DownloadOutlined,
   PlusOutlined,
   ReloadOutlined,
+  FileTextOutlined,
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
+import Head from "next/head";
 
-import { generatePDF } from "@/lib/createInvoice";
+import { generatePDF, viewGeneratedPDF } from "@/lib/createInvoice";
 import { Col, Divider, Flex, Form, Row, UploadFile } from "antd";
 import React, { useEffect, useState } from "react";
 import AntDButton from "../button/AntDButton";
@@ -197,6 +199,18 @@ const Invoice: React.FC = () => {
     }
   };
   const onFinish = async () => {
+    // console.log(fileList[0]);
+    // const generatedData: InvoiceBasicData = sampleData;
+    const data = generatedData();
+    await generatePDF(data, fileList[0] ? fileList[0] : undefined);
+  };
+
+  const onFinishView = async () => {
+    const data = generatedData();
+    await viewGeneratedPDF(data, fileList[0] ? fileList[0] : undefined);
+  };
+
+  const generatedData = () => {
     // console.log("Logo", fileList);
     const data: InvoiceBasicData = {
       ...invoiceData,
@@ -225,10 +239,9 @@ const Invoice: React.FC = () => {
     // console.log(labelNames);
     dispatch(updateLabels(labelNames));
 
-    // console.log(fileList[0]);
-    // const generatedData: InvoiceBasicData = sampleData;
-    await generatePDF(data, fileList[0] ? fileList[0] : undefined);
+    return data;
   };
+
   const onReset = () => {
     setFileList([]);
     let resetDefaultData: InvoiceBasicData = { ...invoiceData };
@@ -291,7 +304,11 @@ const Invoice: React.FC = () => {
     dispatch(resetLabels());
   };
   return (
-    <React.Fragment>
+    <main>
+       <Head>
+        <title>Invoices</title>
+        <meta name="description" content="App to generate free PDF for your business invoices" />
+      </Head>
       <Row className="mx-auto max-w-[1600px]">
         <Col span={18}>
           <Form
@@ -733,14 +750,24 @@ const Invoice: React.FC = () => {
           {/* <PageSizeSelector /> */}
           <SelectCurrency currency={currency} setCurrency={setCurrency} />
           <Divider />
-          <AntDButton
-            icon={<DownloadOutlined />}
-            title="Download"
-            clickEvent={onFinish}
-            className="w-72"
-            size="large"
-            colorType="infoColors"
-          />
+          <div className="flex items-center mt-4">
+            <AntDButton
+              icon={<DownloadOutlined />}
+              title="Download"
+              clickEvent={onFinish}
+              className="w-72"
+              size="large"
+              colorType="infoColors"
+            />
+            <AntDButton
+              icon={<FileTextOutlined />}
+              title="View Invoice"
+              clickEvent={onFinishView}
+              className="w-72 ml-4"
+              size="large"
+              colorType="infoColors"
+            />
+          </div>
           <div className="flex items-center mt-4">
             {/*  reset button */}
             <AntDButton
@@ -770,7 +797,7 @@ const Invoice: React.FC = () => {
           </div>
         </Col>
       </Row>
-    </React.Fragment>
+    </main>
   );
 };
 

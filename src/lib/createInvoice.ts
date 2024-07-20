@@ -59,7 +59,7 @@ async function createInvoice(
   //   drawText(jsonData.owner, 50, height - 50);
   jsonData.owner.split(",").forEach((line) => {
     line = line.trim();
-    drawText(line, 50, owneryPosition);
+    drawText(line + ",", 50, owneryPosition);
     owneryPosition -= 20;
   });
   // bill to
@@ -69,7 +69,7 @@ async function createInvoice(
   let billToyPosition = height - 200;
   jsonData.billTo.split(",").forEach((line) => {
     line = line.trim();
-    drawText(line, 50, billToyPosition);
+    drawText(line + ",", 50, billToyPosition);
     billToyPosition -= 20;
   });
 
@@ -81,7 +81,7 @@ async function createInvoice(
     let shipToyPosition = height - 200;
     jsonData.shipTo.split(",").forEach((line) => {
       line = line.trim();
-      drawText(line, 200, shipToyPosition);
+      drawText(line + ",", 200, shipToyPosition);
       shipToyPosition -= 20;
     });
   }
@@ -267,13 +267,19 @@ async function createInvoice(
 }
 
 // Function to download the PDF (if you're running this in a browser environment)
-function downloadPdf(pdfBytes: any) {
-  //   const blob = new Blob([pdfBytes], { type: "application/pdf" });
-  //   const url = URL.createObjectURL(blob);
-  //   const a = document.createElement("a");
-  //   a.href = url;
-  //   a.download = "invoice.pdf";
-  //   a.click();
+function downloadPdf(pdfBytes: any, invoiceNumber: string) {
+  const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `invoice_${invoiceNumber}.pdf`;
+  a.click();
+  // const blob = new Blob([pdfBytes], { type: "application/pdf" });
+  // const url = URL.createObjectURL(blob);
+  // window.open(url, "_blank");
+}
+
+function viewPdf(pdfBytes: any, invoiceNumber: string) {
   const blob = new Blob([pdfBytes], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
   window.open(url, "_blank");
@@ -286,6 +292,16 @@ export async function generatePDF(
 ) {
   // console.log(data);
   createInvoice(data, file).then((pdfBytes) => {
-    downloadPdf(pdfBytes);
+    downloadPdf(pdfBytes, data.invoiceNumber);
+  });
+}
+
+export async function viewGeneratedPDF(
+  data: InvoiceBasicData,
+  file?: UploadFile | undefined
+) {
+  // console.log(data);
+  createInvoice(data, file).then((pdfBytes) => {
+    viewPdf(pdfBytes, data.invoiceNumber);
   });
 }
