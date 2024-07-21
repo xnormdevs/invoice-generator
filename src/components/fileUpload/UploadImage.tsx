@@ -2,7 +2,7 @@
 import React from "react";
 import { PlusOutlined } from "@ant-design/icons";
 import type { UploadFile, UploadProps } from "antd";
-import { Upload } from "antd";
+import { Button, Upload } from "antd";
 import ImgCrop from "antd-img-crop";
 import Image from "next/image";
 type UploadImageProps = {
@@ -29,7 +29,14 @@ const UploadImage: React.FC<UploadImageProps> = ({ fileList, setFileList }) => {
 
   return (
     <div>
-      <ImgCrop rotationSlider>
+      <ImgCrop
+        rotationSlider
+        aspectSlider
+        showReset
+        showGrid
+        modalTitle="Crop Image"
+        quality={1}
+      >
         <Upload
           action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
           listType="picture-card"

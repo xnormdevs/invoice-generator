@@ -7,7 +7,6 @@ export interface ILetterBasicData {
   subject: string;
   addressPrefix: string;
   body: ILetterParagraph[];
-  signature: string;
 }
 
 export interface ILetterParagraph {

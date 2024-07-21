@@ -20,6 +20,7 @@ import AntDInput from "../input/AntDInput";
 import AntDTextArea from "../input/AntDTextArea";
 import DynamicLetterBody from "./DynamicLetterBody";
 import AntDButton from "../button/AntDButton";
+import { generateLetterPDF, viewGeneratedLetterPDF } from "@/lib/createLetter";
 const defaultLetterData: ILetterBasicData = {
   senderName: "",
   senderAddress: "",
@@ -29,7 +30,6 @@ const defaultLetterData: ILetterBasicData = {
   subject: "",
   addressPrefix: "",
   body: [],
-  signature: "",
 };
 const defaultItem: ILetterParagraph = {
   id: uuidv4(),
@@ -57,14 +57,14 @@ const Letter = () => {
     // const generatedData: InvoiceBasicData = sampleData;
     const data = generatedData();
     console.log(data, fileList[0]);
-    // await generatePDF(data, fileList[0] ? fileList[0] : undefined);
+    await generateLetterPDF(data, fileList[0] ? fileList[0] : undefined);
   };
 
   const onFinishView = async () => {
     const data = generatedData();
     console.log(data, fileList[0]);
 
-    // await viewGeneratedPDF(data, fileList[0] ? fileList[0] : undefined);
+    await viewGeneratedLetterPDF(data, fileList[0] ? fileList[0] : undefined);
   };
   const generatedData = () => {
     // console.log("Logo", fileList);
