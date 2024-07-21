@@ -25,7 +25,7 @@ const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <Link href="/">
           <div className="text-white text-xl font-bold">
-            <Image src="/logo.png" alt="Google" width={100} height={100} />
+            <Image src="/logo.png" alt="Invoice Generator logo" width={100} height={100} />
           </div>
         </Link>
         <div className="flex items-center">
@@ -35,7 +35,9 @@ const Navbar = () => {
           <Link href="/info" className="text-gray-300 hover:text-white ml-4">
             Info
           </Link>
-
+          <Link href="/invoice-generator" className="text-gray-300 hover:text-white ml-4">
+            Free Invoice
+          </Link>
           <div className="ml-4">
             {data?.user ? (
               <>

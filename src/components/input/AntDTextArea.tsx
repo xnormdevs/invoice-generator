@@ -1,6 +1,5 @@
 "use client";
 
-import { Form, Input } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React from "react";
 
@@ -11,7 +10,7 @@ export interface IAntDTextArea {
   onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   className?: string;
   variant: "outlined" | "borderless" | "filled" | undefined;
-  placeholder?:string;
+  placeholder?: string;
 }
 const AntDTextArea = (props: IAntDTextArea) => {
   return (

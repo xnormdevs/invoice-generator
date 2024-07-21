@@ -4,12 +4,13 @@ import {
   BgColorsOutlined,
   CloseOutlined,
   DownloadOutlined,
+  FileTextOutlined,
   PlusOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 
-import { generatePDF } from "@/lib/createInvoice";
+import { generatePDF, viewGeneratedPDF } from "@/lib/createInvoice";
 import { Col, Divider, Flex, Form, Row, UploadFile } from "antd";
 import React, { useEffect, useState } from "react";
 import AntDButton from "../button/AntDButton";
@@ -22,14 +23,19 @@ import SelectCurrency from "../input/SelectCurrency";
 import InputTable from "../table/InputTable";
 
 import { updateColors } from "@/redux/slices/ColorSlice";
-import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
-import { useDispatch, useSelector } from "react-redux";
-import ColorSelector from "../colorSelect/ColorSelector";
 import {
   InvoiceLabels,
   resetLabels,
   updateLabels,
 } from "@/redux/slices/LabelSlice";
+import { ICurrency, InvoiceBasicData, Item } from "@/types/IInvoiceBasicData";
+import { useDispatch, useSelector } from "react-redux";
+import ColorSelector from "../colorSelect/ColorSelector";
+import {
+  onChangeDateFunc,
+  onChangeInputFunc,
+  onChangeTextAreaFunc,
+} from "@/lib/commonFunc";
 
 const defaultInvoiceData: InvoiceBasicData = {
   invoiceName: "INVOICE",
@@ -112,14 +118,15 @@ const Invoice: React.FC = () => {
   });
 
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (invoiceData) {
-      setInvoiceData({
-        ...invoiceData,
-        [e.target.name]: e.target.value,
-      });
-    }
+    onChangeInputFunc(e, setInvoiceData, invoiceData);
+  };
+  const onChangeDate = (name: string, value: any) => {
+    onChangeDateFunc(name, value, setInvoiceData, invoiceData);
   };
 
+  const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChangeTextAreaFunc(e, setInvoiceData, invoiceData);
+  };
   useEffect(() => {
     setInvoiceData({
       ...defaultInvoiceData,
@@ -178,25 +185,19 @@ const Invoice: React.FC = () => {
     invoiceData.shipping,
     invoiceData.amountPaid,
   ]);
-
-  const onChangeDate = (name: string, value: any) => {
-    if (invoiceData) {
-      setInvoiceData({
-        ...invoiceData,
-        [name]: value,
-      });
-    }
-  };
-
-  const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    if (invoiceData) {
-      setInvoiceData({
-        ...invoiceData,
-        [e.target.name]: e.target.value,
-      });
-    }
-  };
   const onFinish = async () => {
+    // console.log(fileList[0]);
+    // const generatedData: InvoiceBasicData = sampleData;
+    const data = generatedData();
+    await generatePDF(data, fileList[0] ? fileList[0] : undefined);
+  };
+
+  const onFinishView = async () => {
+    const data = generatedData();
+    await viewGeneratedPDF(data, fileList[0] ? fileList[0] : undefined);
+  };
+
+  const generatedData = () => {
     // console.log("Logo", fileList);
     const data: InvoiceBasicData = {
       ...invoiceData,
@@ -225,10 +226,9 @@ const Invoice: React.FC = () => {
     // console.log(labelNames);
     dispatch(updateLabels(labelNames));
 
-    // console.log(fileList[0]);
-    // const generatedData: InvoiceBasicData = sampleData;
-    await generatePDF(data, fileList[0] ? fileList[0] : undefined);
+    return data;
   };
+
   const onReset = () => {
     setFileList([]);
     let resetDefaultData: InvoiceBasicData = { ...invoiceData };
@@ -733,14 +733,24 @@ const Invoice: React.FC = () => {
           {/* <PageSizeSelector /> */}
           <SelectCurrency currency={currency} setCurrency={setCurrency} />
           <Divider />
-          <AntDButton
-            icon={<DownloadOutlined />}
-            title="Download"
-            clickEvent={onFinish}
-            className="w-72"
-            size="large"
-            colorType="infoColors"
-          />
+          <div className="flex items-center mt-4">
+            <AntDButton
+              icon={<DownloadOutlined />}
+              title="Download"
+              clickEvent={onFinish}
+              className="w-72"
+              size="large"
+              colorType="infoColors"
+            />
+            <AntDButton
+              icon={<FileTextOutlined />}
+              title="View Invoice"
+              clickEvent={onFinishView}
+              className="w-72 ml-4"
+              size="large"
+              colorType="infoColors"
+            />
+          </div>
           <div className="flex items-center mt-4">
             {/*  reset button */}
             <AntDButton

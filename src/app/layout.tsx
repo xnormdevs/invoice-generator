@@ -14,8 +14,11 @@ const roboto = Roboto({
   display: "swap",
 });
 export const metadata: Metadata = {
-  title: "Invoice Generator",
-  description: "App to generate free invoces",
+  title: {
+    template: '%s | Invoice Generator',
+    default: 'Invoice Generator',
+  },
+  description: "App to generate free PDF for your business invoices, letters",
 };
 
 export default function RootLayout({
