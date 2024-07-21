@@ -13,6 +13,7 @@ async function createLetter(
   const { width, height } = page.getSize();
   const fontSize = 12;
   const margin = 50;
+  const leftMargin = 70;
 
   const lineHeight = 20;
   const newSectionSize = 10;
@@ -67,37 +68,37 @@ async function createLetter(
     });
   };
 
-  drawText(`${jsonData.senderName}`, 50, height - 70);
+  drawText(`${jsonData.senderName}`, leftMargin, height - 70);
   yPosition = height - 70 - lineHeight;
 
   jsonData.senderAddress.split(",").forEach((line) => {
     line = line.trim();
-    drawText(line + ",", 50, yPosition);
+    drawText(line + ",", leftMargin, yPosition);
   });
 
-  drawText(`${jsonData.date}`, 50, yPosition);
+  drawText(`${jsonData.date}`, leftMargin, yPosition);
   yPosition -= newSectionSize;
 
-  drawText(`${jsonData.receiverName}`, 50, yPosition);
+  drawText(`${jsonData.receiverName}`, leftMargin, yPosition);
   jsonData.receiverAddress.split(",").forEach((line) => {
     line = line.trim();
-    drawText(line + ",", 50, yPosition);
+    drawText(line + ",", leftMargin, yPosition);
   });
 
   yPosition -= 10;
-  drawText(`Dear ${jsonData.addressPrefix}`, 50, yPosition);
+  drawText(`Dear ${jsonData.addressPrefix}`, leftMargin, yPosition);
   yPosition -= newSectionSize;
 
-  drawText(`${jsonData.subject}`, 50, yPosition);
+  drawText(`${jsonData.subject}`, leftMargin, yPosition);
   yPosition -= newSectionSize;
 
   jsonData.body.forEach((item) => {
-    drawText(item.text, 50, 0);
+    drawText(item.text, leftMargin, 0);
 
     yPosition -= lineHeight;
   });
 
-  drawText(`Sincerely`, 50, yPosition);
+  drawText(`Sincerely`, leftMargin, yPosition);
   
   if (file != undefined) {
     yPosition -= lineHeight;
@@ -106,14 +107,14 @@ async function createLetter(
 
     const pngImage = await pdfDoc.embedPng(file?.thumbUrl as string);
     page.drawImage(pngImage, {
-      x: margin,
+      x: leftMargin,
       y: yPosition,
       width: 75,
       height: 75,
     });
     yPosition -= newSectionSize;
   }
-  drawText(`${jsonData.senderName}`, 50, yPosition);
+  drawText(`${jsonData.senderName}`, leftMargin, yPosition);
 
   const pdfBytes = await pdfDoc.save();
   return pdfBytes;
