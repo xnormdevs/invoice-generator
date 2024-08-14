@@ -8,7 +8,9 @@ async function createLetter(
 ) {
   const pdfDoc = await PDFDocument.create();
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-  const timesRomanBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+  const timesRomanBoldFont = await pdfDoc.embedFont(
+    StandardFonts.TimesRomanBold
+  );
   let page = pdfDoc.addPage(PageSizes.A4);
   const { width, height } = page.getSize();
   const fontSize = 12;
@@ -68,6 +70,10 @@ async function createLetter(
     });
   };
 
+  const drawBoldText = (text: string, x: number, y: number, options = {}) => {
+    drawText(text, x, y, { font: timesRomanBoldFont });
+  };
+
   drawText(`${jsonData.senderName}`, leftMargin, height - 70);
   yPosition = height - 70 - lineHeight;
 
@@ -89,7 +95,7 @@ async function createLetter(
   drawText(`Dear ${jsonData.addressPrefix}`, leftMargin, yPosition);
   yPosition -= newSectionSize;
 
-  drawText(`${jsonData.subject}`, leftMargin, yPosition);
+  drawBoldText(`${jsonData.subject}`, leftMargin, yPosition);
   yPosition -= newSectionSize;
 
   jsonData.body.forEach((item) => {
@@ -99,7 +105,7 @@ async function createLetter(
   });
 
   drawText(`Sincerely`, leftMargin, yPosition);
-  
+
   if (file != undefined) {
     yPosition -= lineHeight;
     yPosition -= lineHeight;
