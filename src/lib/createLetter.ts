@@ -8,7 +8,7 @@ async function createLetter(
 ) {
   const pdfDoc = await PDFDocument.create();
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-  const timesRomanBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
+  const timesRomanBoldFont = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
   let page = pdfDoc.addPage(PageSizes.A4);
   const { width, height } = page.getSize();
   const fontSize = 12;
@@ -19,7 +19,15 @@ async function createLetter(
   const newSectionSize = 10;
 
   let yPosition = height - lineHeight;
-
+  const drawBoldText = (text: any, x: any, y: any, options = {}) => {
+    page.drawText(text, {
+      x,
+      y,
+      font: timesRomanBoldFont,
+      size: fontSize,
+      ...options,
+    });
+  };
   const splitTextIntoLines = (
     text: string,
     maxWidth: number,
@@ -89,7 +97,7 @@ async function createLetter(
   drawText(`Dear ${jsonData.addressPrefix}`, leftMargin, yPosition);
   yPosition -= newSectionSize;
 
-  drawText(`${jsonData.subject}`, leftMargin, yPosition);
+  drawBoldText(`${jsonData.subject}`, leftMargin, yPosition);
   yPosition -= newSectionSize;
 
   jsonData.body.forEach((item) => {
